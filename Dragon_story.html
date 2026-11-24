@@ -1,216 +1,149 @@
 <!DOCTYPE html>
-<html lang="el">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ο Δράκος που φοβόταν τη φωτιά</title>
+<title>The White Dragon and the Black Dragon</title>
 <style>
-  * { -webkit-box-sizing: border-box; box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; min-height: 100%; }
-  body {
-    font-family: Georgia, "Times New Roman", serif;
-    color: #2b2140;
-    background: #1d1640;
-    background: -webkit-linear-gradient(top, #1d1640, #5b3a8c);
-    background: linear-gradient(to bottom, #1d1640, #5b3a8c);
-    background-attachment: fixed;
-    -webkit-text-size-adjust: 100%;
-  }
-  .book {
-    max-width: 720px; margin: 0 auto; padding: 24px 16px 40px;
-  }
-  h1 {
-    color: #ffe9a8; text-align: center; font-size: 2rem; margin: 8px 0 20px;
-    text-shadow: 0 2px 6px rgba(0,0,0,.5);
-  }
-  .page {
-    display: none; background: #fff8e8; border-radius: 14px;
-    padding: 20px 22px 26px; border: 4px solid #e0b860;
-    -webkit-box-shadow: 0 8px 24px rgba(0,0,0,.45); box-shadow: 0 8px 24px rgba(0,0,0,.45);
-  }
-  .page.active { display: block; }
-  .page h2 { margin: 0 0 8px; text-align: center; color: #7a3b1d; font-size: 1.4rem; }
-  .page p { font-size: 1.15rem; line-height: 1.65; margin: 12px 0 0; }
-  .art { display: block; width: 100%; height: auto; border-radius: 10px; }
-  .nav { text-align: center; margin-top: 18px; }
-  .nav button {
-    font-family: inherit; font-size: 1.05rem; cursor: pointer;
-    background: #e0b860; color: #3a2400; border: 0; border-radius: 22px;
-    padding: 10px 22px; margin: 4px;
-  }
-  .nav button:hover, .nav button:focus { background: #ffd47a; }
-  .nav button[disabled] { opacity: .4; cursor: default; }
-  .count { color: #ffe9a8; text-align: center; margin-top: 8px; font-size: .95rem; }
-  .noscript { background: #fff8e8; padding: 12px; border-radius: 8px; }
-  @media print { body { background: #fff; } .page { display: block !important; page-break-after: always; box-shadow: none; } .nav, .count { display: none; } }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: #14122b; background: -webkit-linear-gradient(top,#14122b,#3b2a5e); background: linear-gradient(to bottom,#14122b,#3b2a5e); background-attachment: fixed; font-family: Georgia, "Times New Roman", serif; color: #2a2438; }
+  .wrap { max-width: 700px; margin: 0 auto; padding: 28px 14px 48px; }
+  .paper { background: #fbf7ee; border: 4px solid #d9b866; border-radius: 12px; padding: 28px 26px 34px; -webkit-box-shadow: 0 8px 26px rgba(0,0,0,.5); box-shadow: 0 8px 26px rgba(0,0,0,.5); }
+  h1 { margin: 0 0 6px; text-align: center; font-size: 2rem; line-height: 1.2; color: #3b2a5e; }
+  .sub { text-align: center; font-style: italic; color: #7a5a1d; margin: 0 0 8px; }
+  .bar { height: 2px; background: #d9b866; margin: 18px 0 8px; }
+  p { font-size: 1.15rem; line-height: 1.7; margin: 14px 0 0; }
+  p.said { padding-left: 16px; border-left: 3px solid #d9b866; font-style: italic; }
+  p.end { text-align: center; font-style: italic; font-weight: bold; margin-top: 28px; }
+  @media (max-width: 480px) { .paper { padding: 20px 16px 26px; } h1 { font-size: 1.6rem; } p { font-size: 1.08rem; } }
+  @media print { body { background: #fff; } .paper { border: 0; box-shadow: none; } }
 </style>
 </head>
 <body>
-<div class="book">
-  <h1>Ο Δράκος που φοβόταν τη φωτιά</h1>
-
-  <div id="pages">
-
-    <div class="page">
-      <h2>1. Ο Ζαφείρης</h2>
-      <svg class="art" viewBox="0 0 400 220" role="img" aria-label="Ένας μικρός μπλε δράκος σε βουνό">
-        <rect width="400" height="220" fill="#bfe3ff"/>
-        <polygon points="0,220 120,70 240,220" fill="#8aa3c7"/>
-        <polygon points="160,220 290,50 400,220" fill="#6f87ad"/>
-        <circle cx="340" cy="40" r="22" fill="#ffe07a"/>
-        <ellipse cx="200" cy="160" rx="55" ry="38" fill="#2f7fd1"/>
-        <circle cx="250" cy="130" r="26" fill="#2f7fd1"/>
-        <polygon points="240,108 246,88 254,108" fill="#1e5aa0"/>
-        <polygon points="256,106 266,88 270,110" fill="#1e5aa0"/>
-        <circle cx="258" cy="127" r="6" fill="#fff"/><circle cx="260" cy="128" r="3" fill="#222"/>
-        <path d="M148 165 Q110 150 100 185 Q125 175 150 180 Z" fill="#2f7fd1"/>
-        <path d="M185 130 Q170 90 215 105 Z" fill="#7cc0ff"/>
-      </svg>
-      <p>Ψηλά, πάνω από τα σύννεφα, στο βουνό των Τριών Κορυφών, ζούσε ένας μικρός μπλε δράκος που τον έλεγαν Ζαφείρη. Είχε λαμπερά λέπια και δυο μεγάλα φτερά. Όλα τα άλλα δρακάκια τον ζήλευαν.</p>
-      <p>Είχε όμως ένα μυστικό: όποτε προσπαθούσε να βγάλει φωτιά, του έφευγε μια μικρή μπουρμπουλήθρα καπνού κι έτρεμε από τον φόβο του.</p>
-    </div>
-
-    <div class="page">
-      <h2>2. Το μυστικό</h2>
-      <svg class="art" viewBox="0 0 400 220" role="img" aria-label="Δρακάκια γελούν γύρω από φλόγες">
-        <rect width="400" height="220" fill="#ffd9a8"/>
-        <path d="M60 200 Q80 120 100 200 Z" fill="#ff7a1a"/><path d="M75 200 Q85 150 95 200 Z" fill="#ffd23f"/>
-        <path d="M300 200 Q320 110 340 200 Z" fill="#ff7a1a"/><path d="M315 200 Q325 150 335 200 Z" fill="#ffd23f"/>
-        <ellipse cx="200" cy="170" rx="42" ry="28" fill="#2f7fd1"/>
-        <circle cx="238" cy="148" r="20" fill="#2f7fd1"/>
-        <circle cx="244" cy="145" r="4" fill="#222"/>
-        <path d="M236 160 Q225 165 220 158" stroke="#1e5aa0" stroke-width="3" fill="none"/>
-        <circle cx="205" cy="105" r="6" fill="#9fd0ff"/><circle cx="220" cy="85" r="4" fill="#9fd0ff"/>
-      </svg>
-      <p>— Ελα, Ζαφείρη, φύσηξε φωτιά! — φώναζαν τα άλλα δρακάκια στο μεγάλο παιχνίδι της Κορυφής.</p>
-      <p>Εκείνος κρυβόταν πίσω από έναν βράχο. «Και αν κάψω κάποιον; Και αν κάψω τα λουλούδια του λιβαδιού;» σκεφτόταν. Έτσι έφευγε κάθε φορά, πριν προλάβει κανείς να τον δει.</p>
-    </div>
-
-    <div class="page">
-      <h2>3. Η γριά κυρά Αστέρω</h2>
-      <svg class="art" viewBox="0 0 400 220" role="img" aria-label="Μια γριά με φανάρι σε δάσος τη νύχτα">
-        <rect width="400" height="220" fill="#1f2a55"/>
-        <circle cx="60" cy="40" r="3" fill="#fff"/><circle cx="150" cy="25" r="2" fill="#fff"/><circle cx="330" cy="50" r="3" fill="#fff"/><circle cx="260" cy="20" r="2" fill="#fff"/>
-        <polygon points="40,220 80,100 120,220" fill="#1b6b45"/><polygon points="290,220 340,90 390,220" fill="#1b6b45"/>
-        <circle cx="200" cy="120" r="55" fill="#ffe9a8" opacity=".25"/>
-        <rect x="185" y="125" width="30" height="60" rx="12" fill="#8a4b2a"/>
-        <circle cx="200" cy="110" r="16" fill="#f1c9a0"/>
-        <path d="M184 105 Q200 85 216 105 Z" fill="#ddd"/>
-        <rect x="222" y="138" width="14" height="20" fill="#e0b860"/><circle cx="229" cy="132" r="7" fill="#ffd23f"/>
-      </svg>
-      <p>Ένα βράδυ, ο Ζαφείρης έχασε τον δρόμο του μέσα στο δάσος. Σκοτείνιασε κι έκανε κρύο. Τότε είδε ένα μικρό φως να τρεμοπαίζει ανάμεσα στα δέντρα.</p>
-      <p>Ήταν η κυρά Αστέρω, μια γριά που μάζευε βότανα με το φανάρι της. — Μη φοβάσαι, παιδί μου, του είπε. Όλοι χαθήκαμε κάποτε.</p>
-    </div>
-
-    <div class="page">
-      <h2>4. Το μικρό φως</h2>
-      <svg class="art" viewBox="0 0 400 220" role="img" aria-label="Ο δράκος ανάβει φανάρι">
-        <rect width="400" height="220" fill="#1f2a55"/>
-        <circle cx="200" cy="120" r="70" fill="#ffd23f" opacity=".3"/>
-        <ellipse cx="170" cy="160" rx="42" ry="28" fill="#2f7fd1"/>
-        <circle cx="208" cy="138" r="20" fill="#2f7fd1"/>
-        <circle cx="214" cy="135" r="4" fill="#fff"/><circle cx="215" cy="135" r="2" fill="#222"/>
-        <rect x="240" y="130" width="30" height="40" rx="5" fill="#e0b860"/>
-        <path d="M255 142 Q245 125 255 108 Q265 125 255 142 Z" fill="#ff7a1a"/>
-        <path d="M255 142 Q251 132 255 124 Q259 132 255 142 Z" fill="#ffe07a"/>
-      </svg>
-      <p>Το φανάρι της είχε σβήσει από τον αέρα. — Αχ, δεν έχω σπίρτα, αναστέναξε η γριά.</p>
-      <p>Ο Ζαφείρης ένιωσε την καρδιά του να χτυπά δυνατά. Πήρε μια βαθιά ανάσα και φύσηξε πολύ, πολύ απαλά. Δεν βγήκε φωτιά που καίει, μόνο μια μικρή, ζεστή φλογίτσα. Το φανάρι άναψε και το δάσος γέμισε χρυσό φως.</p>
-    </div>
-
-    <div class="page">
-      <h2>5. Ο δρόμος για το σπίτι</h2>
-      <svg class="art" viewBox="0 0 400 220" role="img" aria-label="Ο δράκος και η γριά περπατούν με φως">
-        <rect width="400" height="220" fill="#2b3a7a"/>
-        <polygon points="0,220 130,90 260,220" fill="#3d4f9a"/>
-        <polygon points="200,220 320,70 400,220" fill="#34448c"/>
-        <circle cx="70" cy="40" r="3" fill="#fff"/><circle cx="200" cy="30" r="2" fill="#fff"/><circle cx="350" cy="35" r="3" fill="#fff"/>
-        <ellipse cx="170" cy="165" rx="40" ry="26" fill="#2f7fd1"/>
-        <circle cx="206" cy="145" r="18" fill="#2f7fd1"/>
-        <path d="M150 140 Q120 95 175 120 Z" fill="#7cc0ff"/>
-        <path d="M222 148 L300 160" stroke="#ffd23f" stroke-width="4" opacity=".6"/>
-        <circle cx="300" cy="160" r="9" fill="#ffd23f"/>
-      </svg>
-      <p>Η κυρά Αστέρω χάρηκε τόσο πολύ που έβγαλε από την τσάντα της ένα ζεστό ψωμί με μέλι. — Μια φωτιά δεν είναι κακή, του είπε. Εξαρτάται ποιος την κρατά και τι θέλει να κάνει μαζί της.</p>
-      <p>Ο Ζαφείρης φώτισε τον δρόμο και η γριά τον οδήγησε πίσω, ως τη Μεγάλη Κορυφή.</p>
-    </div>
-
-    <div class="page">
-      <h2>6. Η μεγάλη γιορτή</h2>
-      <svg class="art" viewBox="0 0 400 220" role="img" aria-label="Δρακάκια γιορτάζουν με φωτάκια">
-        <rect width="400" height="220" fill="#1d1640"/>
-        <circle cx="60" cy="40" r="3" fill="#fff"/><circle cx="180" cy="20" r="2" fill="#fff"/><circle cx="330" cy="45" r="3" fill="#fff"/>
-        <circle cx="80" cy="90" r="7" fill="#ffd23f"/><circle cx="140" cy="70" r="7" fill="#ff9a3c"/><circle cx="210" cy="85" r="7" fill="#ffd23f"/><circle cx="280" cy="65" r="7" fill="#ff9a3c"/><circle cx="335" cy="95" r="7" fill="#ffd23f"/>
-        <path d="M0 220 L0 175 Q200 140 400 175 L400 220 Z" fill="#3a2a6e"/>
-        <ellipse cx="120" cy="175" rx="30" ry="20" fill="#e0557a"/>
-        <ellipse cx="200" cy="170" rx="36" ry="24" fill="#2f7fd1"/>
-        <circle cx="232" cy="152" r="16" fill="#2f7fd1"/>
-        <ellipse cx="290" cy="177" rx="30" ry="20" fill="#4fb36a"/>
-      </svg>
-      <p>Εκείνο το βράδυ, τα δρακάκια έκαναν γιορτή και ο Ζαφείρης άναψε ένα-ένα τα φανάρια του βουνού. Κανείς δεν γέλασε με τον καπνό του. Όλοι τον χειροκρότησαν.</p>
-      <p>Από τότε ο Ζαφείρης δεν φοβήθηκε ξανά τη φωτιά του. Έμαθε ότι το θάρρος δεν είναι να μην φοβάσαι, αλλά να προσπαθείς απαλά, ακόμα κι όταν τρέμεις.</p>
-      <p style="text-align:center"><strong>Τέλος</strong></p>
-    </div>
-
-  </div>
-
-  <div class="nav">
-    <button type="button" id="prev">&larr; Πίσω</button>
-    <button type="button" id="next">Επόμενη &rarr;</button>
-  </div>
-  <div class="count" id="count"></div>
-  <noscript><p class="noscript">Για να γυρίζεις τις σελίδες, ενεργοποίησε τη JavaScript. Μπορείς επίσης να εκτυπώσεις τη σελίδα για να δεις όλη την ιστορία.</p></noscript>
-</div>
-
-<script>
-(function () {
-  var pages = document.getElementById('pages').getElementsByTagName('div');
-  var list = [], i;
-  for (i = 0; i < pages.length; i++) {
-    if ((' ' + pages[i].className + ' ').indexOf(' page ') > -1) list.push(pages[i]);
-  }
-  var prev = document.getElementById('prev');
-  var next = document.getElementById('next');
-  var count = document.getElementById('count');
-  var cur = 0;
-
-  function show(n) {
-    if (n < 0 || n >= list.length) return;
-    cur = n;
-    for (var k = 0; k < list.length; k++) {
-      list[k].className = k === n ? 'page active' : 'page';
-    }
-    prev.disabled = n === 0;
-    next.disabled = n === list.length - 1;
-    count.innerHTML = 'Σελίδα ' + (n + 1) + ' από ' + list.length;
-    try { window.scrollTo(0, 0); } catch (e) {}
-    try { if (window.history && history.replaceState) history.replaceState(null, '', '#' + (n + 1)); } catch (e2) {}
-  }
-
-  prev.onclick = function () { show(cur - 1); };
-  next.onclick = function () { show(cur + 1); };
-  document.onkeydown = function (e) {
-    e = e || window.event;
-    var key = e.keyCode;
-    if (key === 37) show(cur - 1);
-    if (key === 39) show(cur + 1);
-  };
-
-  // swipe για κινητά
-  var sx = null;
-  document.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; }, false);
-  document.addEventListener('touchend', function (e) {
-    if (sx === null) return;
-    var dx = e.changedTouches[0].clientX - sx;
-    sx = null;
-    if (dx > 60) show(cur - 1);
-    else if (dx < -60) show(cur + 1);
-  }, false);
-
-  var start = parseInt((window.location.hash || '').replace('#', ''), 10);
-  show(start >= 1 && start <= list.length ? start - 1 : 0);
-})();
-</script>
+<div class="wrap"><div class="paper">
+<h1>The White Dragon and the Black Dragon</h1>
+<p class="sub">A fairy tale about fire, patience, and the power of acceptance.</p>
+<div class="bar"></div>
+<p>High in the frozen mountains of the north, where the wind carries old stories and winter never quite leaves, in the thickest part of the forest, there lived a witch called Hazel, and she was not wicked at all.</p>
+<p>She had chosen for her home the deepest cave in the forest, where not even moonlight could reach. The absolute dark did not frighten her. She loved it. She wore it like an old, heavy coat, and she had learned to move through it without needing to see.</p>
+<p>And then two dragons came to bring her light: the White Dragon and the Black Dragon.</p>
+<p>The White Dragon was so utterly white that her whiteness had turned into light. She glowed on her own inside the cave, quietly, asking for nothing, the way snow glows in the night.</p>
+<p>The Black Dragon was black from horn to tail, but fire lived in his breath. Every time he breathed, flames poured out and lit the cave, and the shadows danced along the walls.</p>
+<p>Whatever Hazel touched grew more beautiful, because she was a witch, and she wanted nothing more than to help the villagers.</p>
+<p>But at first the villagers were afraid of her, for the simple reason that she was a witch and cast spells. They never asked what the spells were for. They only saw the sparks.</p>
+<p>Deep in her cave, beneath a pile of stones, she kept a hoard of old vinyl records: rock and roll. She brought them out rarely, on very few nights. But music always finds its way. It slipped out of the cave, drifted down through the forest, and reached the village. And the villagers condemned it.</p>
+<p>One night, as the blizzards grew stronger, the witch climbed high into the mountains and found two eggs made of stone, in another cave that hummed as though it carried a deep heartbeat inside it, one you could feel in your chest.</p>
+<p>One egg was black. The other was white.</p>
+<p>She carried them in her arms all the way back to her cave and set them down beside the hearth, which had been cold and dark for a very long time.</p>
+<p>Days passed. And one evening, the eggs cracked.</p>
+<p>From the white egg, from which everyone expected something gentle and pure, came a black dragon.</p>
+<p>And from the black egg, from which everyone expected darkness, came a white dragon.</p>
+<p>So the witch learned, on the very first day, that the colour of a shell tells you nothing about what lives inside it.</p>
+<p>The White Dragon was like the moon. Quiet and silver, she was the dragon of reason and thought, and she spoke softly.</p>
+<p>She was like the steady bass of a band. She did not need to be louder than anyone else. She kept the rhythm so that the others could dance.</p>
+<p>The Black Dragon was like a storm. Enormous, quick, impulsive, with a breath that carried fire.</p>
+<p>He was the dragon of creative stories and spells. He thought of everything at once, each thought inside the next, and he laughed out loud.</p>
+<p>When he breathed his fire, the witch’s sky filled with colours that had no names.</p>
+<p>For a little while, it was the most beautiful thing she had ever seen.</p>
+<p>With her spells, the Black Dragon showed her powers she had not known she had. Beside him she made magic stronger than any she had made before.</p>
+<p>But strong magic is hard to hold, and sometimes the spells brought harm instead of help.</p>
+<p>The fire would not stop. It burned through her nights, which no longer wanted sleep. It burned through her words, which ran faster than her heart. It pushed her to run, and to begin everything at once, before she could catch her breath.</p>
+<p>The villagers saw the flames from far away, trembled, and called him a demon. And the witch herself was afraid of him, because she knew how much a fire can burn when no one is holding it.</p>
+<p>Sometimes he did not look like a dragon at all. He looked like an enormous ball of lava, rolling across the sky and swallowing everything in front of it.</p>
+<p>In those moments the witch could hardly find the dragon inside his flames.</p>
+<p>The White Dragon did not do what anyone expected.</p>
+<p>She did not fight the Black Dragon, and she did not try to put out his fire, because she knew that if she put it out, she would put out the witch’s light too.</p>
+<p>She sat down beside him, in the middle of the worst storm, and said:</p>
+<p class="said">“You are not wicked. You are a fire that doesn’t yet know where to go.”</p>
+<p>The Black Dragon growled. No one had ever spoken to him like that. Everyone had always told him “stop” or “go away.”</p>
+<p>So the White Dragon began to show him, day by day, without hurry, a virtue he had never learned: patience.</p>
+<p>She taught him that the space between the beats is music too.</p>
+<p>That the fire in a hearth warms a house, while the same fire in a forest can destroy it.</p>
+<p>That the fire of a lighthouse stands still on the shore, so that ships far away can see it and know where they are.</p>
+<p>And when the Black Dragon cried, “Now, right now!”, the White Dragon whispered:</p>
+<p class="said">“Breathe. What’s worth doing will still be worth doing tomorrow.”</p>
+<p>The Black Dragon did not always learn on the first try. But slowly he discovered that when his flame was small, like a candle, he could see things no one else could see.</p>
+<p>He made magic, and he found worlds no one had imagined.</p>
+<p>That was his good side, and it was never far away. It lived inside his fire, in the place no one had the courage to look.</p>
+<p>The witch knew one more thing, and she said it plainly:</p>
+<p>She wanted the candle, not the wildfire.</p>
+<p>And she did not want to live inside the fire forever.</p>
+<p>Every time the storm passed, a cold came down.</p>
+<p>The Black Dragon shrank and grew heavy as a stone. His fire became a lump of coal that barely glowed.</p>
+<p>And with him went the witch’s clear thinking.</p>
+<p>Her words slipped away and her mind filled with fog. She did not want to play with anyone, and she did not want to leave her cave.</p>
+<p>This was the saddest part of the story.</p>
+<p>It was like the stage after the last song: the lights off, the speakers humming with nothing left to say.</p>
+<p>The White Dragon never told her, “Get up.” She never told her, “Smile.”</p>
+<p>She curled up beside the coal and kept it warm with her breath.</p>
+<p class="said">“Ash remembers the fire,” she whispered.</p>
+<p class="said">“I will wait.”</p>
+<p>And every time, a day came when the flame showed itself again, small.</p>
+<p>Far from the frozen mountains of the north, a lone rider was travelling. His name was Jasper, and he was a wandering dragon trainer.</p>
+<p>He had spent many years going from place to place, meeting different kinds of dragons, studying their habits, and learning their language.</p>
+<p>He never hunted them or caged them. He believed that even the wildest dragons had something worth understanding.</p>
+<p>One day he reached the village where the witch lived, at the foot of the frozen mountains, and began to hear rumours about a terrible black dragon.</p>
+<p>They said he was enormous, that his fire could burn whole forests, that he never slept, and that no one could go near him.</p>
+<p>Some said he was like molten fire pouring across the sky. Others said he was the demon himself.</p>
+<p>Some said a hunter should be found to banish him for good.</p>
+<p>And some admitted that no one had ever seen him up close, and that everything they knew they had heard from someone else.</p>
+<p>Jasper listened carefully and said little.</p>
+<p>He knew that the stories people tell seldom hold the whole truth.</p>
+<p>So one morning he climbed onto his horse and took the road up into the mountains.</p>
+<p>When he reached the witch’s cave, he saw the Black Dragon flying above the trees. His flames lit the sky and his roar made the mountains tremble.</p>
+<p>Jasper stopped his horse and watched.</p>
+<p>Then he saw the White Dragon too, flying close beside the Black Dragon, holding a calm and steady rhythm.</p>
+<p>A little farther off stood the witch.</p>
+<p>Jasper asked to speak with her.</p>
+<p class="said">“Are you the witch who lives with the two dragons?” he asked.</p>
+<p class="said">“Yes,” she answered.</p>
+<p class="said">“I’ve heard a great deal about your Black Dragon.”</p>
+<p>Hazel smiled faintly.</p>
+<p class="said">“Most people only hear his flames.”</p>
+<p>Jasper looked at her for a moment, then said:</p>
+<p class="said">“I came to meet the dragon himself, not the stories other people tell about him.”</p>
+<p>From that day he began to spend his time in the cave.</p>
+<p>He watched the two dragons, and he listened as the witch explained everything she had discovered over the years.</p>
+<p>He learned to recognise the signs before a storm. He understood when to come close and when to keep his distance.</p>
+<p>Slowly he found that the Black Dragon was not only his fire. He was also the small ember that stayed lit when the storm had passed.</p>
+<p>Jasper had not come to take the White Dragon’s place, or to change the witch’s life.</p>
+<p>He only wanted to know their world, and to share what he had learned on his journeys.</p>
+<p>In time he became a precious friend of the cave.</p>
+<p>He showed the Black Dragon that strength lies not only in how high you can fly, but in when you choose to land.</p>
+<p>He taught him to tell the wind that lifts his wings from the wind that might carry him away.</p>
+<p>And when the sky grew too bright again, Jasper recognised the first signs.</p>
+<p class="said">“I think the White Dragon has been gone for days,” he would tell the witch. “Shall we call her back?”</p>
+<p>And the witch no longer felt alone.</p>
+<p>Jasper taught her to ride the dragons.</p>
+<p>At first Hazel clung to the White Dragon with both hands, her eyes shut, not daring to look down.</p>
+<p>But one day the great wings opened and the cave fell away behind her. Jasper flew beside her on the Black Dragon, whose fire he had learned to read, and together they rose above the trees, above the village, above the frozen mountains, for a few days, farther than the witch had ever gone.</p>
+<p>It was the first time Hazel had travelled so far from her cave and her forest, and she saw that the world had far more room in it than she had ever imagined.</p>
+<p>And when they came home, her cave seemed even more her own.</p>
+<p>It was not always easy. There were still storms, days full of fire and nights full of fog.</p>
+<p>But now the witch had learned to read her own sky. And she had people close by who could tell when she needed help.</p>
+<p>Jasper went on travelling, as he always had. Sometimes he was gone for days, and then he returned.</p>
+<p>He had never promised to stay forever. Nor did he need to.</p>
+<p>When he came back, the dragons knew him from far away.</p>
+<p>One day, as the White Dragon flew beside the Black Dragon’s fire, something strange happened.</p>
+<p>Her silver wings began to catch the light of the flames. Slowly they filled with every colour, shimmering and iridescent, until she looked like a peacock spreading its tail across the sky.</p>
+<p>Everyone still called her the White Dragon, but the witch knew her colours had always been there.</p>
+<p>They had only been waiting to find their light.</p>
+<p>And so the four of them went on with their adventures.</p>
+<p>The White Dragon, who was called Luna now, the old Latin word for moon, kept the rhythm. The Black Dragon, who was called Coal now, because coal looks black but hides the fire that warms our homes, knew where to rest his flame.</p>
+<p>Jasper kept up his travels, bringing back new stories. And Hazel kept writing her own.</p>
+<p>They were a band now, and the music they played was slow and warm, with a bass you could feel in your chest.</p>
+<p>Coal played the lead, Luna held the bass and the rhythm, Jasper brought new melodies, and Hazel sang.</p>
+<p>Some nights the songs were loud, some nights slow.</p>
+<p>And she had stopped being afraid of both.</p>
+<p>Hazel wrote a new chorus for the band, and it went like this:</p>
+<p class="said">“Now I don’t fight my demons. I don’t need to put out my fire. I’m learning to fly with it. And the sky has room for both of us.”</p>
+<p>And when the villagers understood that the dragons were not simply enemies, and that the witch had never wanted to harm them, they stopped being afraid.</p>
+<p>From then on, whenever the witch was in her darkest days and her cave filled with absolute darkness, the villagers came to visit her carrying small lit candles, the way a crowd does at the end of a concert beneath the stars.</p>
+<p>And the witch went on living in her cave, making magic and writing stories.</p>
+<p>Because she had never needed a prince to save her.</p>
+<p>She had already learned to rule her own sky.</p>
+<p class="end">The End.</p>
+</div></div>
 </body>
 </html>
