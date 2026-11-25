@@ -6,35 +6,48 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ο Λευκός Δράκος και ο Μαύρος Δράκος / The White Dragon and the Black Dragon</title>
 <style>
-  html { -webkit-text-size-adjust: 100%; background: #000; }
-  body { margin: 0; background: #000; color: #ddd2a8; font-family: Arial, Helvetica, sans-serif; }
-  .wrap { max-width: 680px; margin: 0 auto; padding: 20px 18px 56px; }
+  html { -webkit-text-size-adjust: 100%; background: #fff; }
+  html:has(#t-en:checked) { background: #000; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; }
   .radio { position: absolute; opacity: 0; width: 1px; height: 1px; }
-  .tabs { display: -webkit-box; display: -webkit-flex; display: flex; border-bottom: 1px solid #ddd2a8; margin-bottom: 28px; }
-  .tabs label { -webkit-box-flex: 1; -webkit-flex: 1; flex: 1; text-align: center; padding: 14px 8px; font-size: 1.05rem; cursor: pointer; border-bottom: 4px solid transparent; margin-bottom: -1px; opacity: .65; }
+  .tabs { display: -webkit-box; display: -webkit-flex; display: flex; max-width: 680px; margin: 0 auto; padding: 0 18px; }
+  .tabs label { -webkit-box-flex: 1; -webkit-flex: 1; flex: 1; text-align: center; padding: 16px 8px; font-size: 1.05rem; cursor: pointer; border-bottom: 4px solid transparent; opacity: .65; }
   .tabs label:hover { opacity: 1; }
-  .panel { display: none; }
+  .bar { border-bottom: 1px solid; }
+  .panel { display: none; min-height: 100vh; }
+  .inner { max-width: 680px; margin: 0 auto; padding: 28px 18px 64px; }
+  /* Greek: white page, black text */
+  .panel-el { background: #fff; color: #000; }
+  /* English: black page, golden text */
+  .panel-en { background: #000; color: #ddd2a8; }
+  .bar-el { background: #fff; color: #000; border-color: #000; }
+  .bar-en { background: #000; color: #ddd2a8; border-color: #ddd2a8; }
   #t-el:checked ~ .panel-el, #t-en:checked ~ .panel-en { display: block; }
-  #t-el:checked ~ .tabs label[for="t-el"], #t-en:checked ~ .tabs label[for="t-en"] { border-bottom-color: #ddd2a8; font-weight: bold; opacity: 1; }
-  #t-el:focus ~ .tabs label[for="t-el"], #t-en:focus ~ .tabs label[for="t-en"] { outline: 2px solid #ddd2a8; outline-offset: -4px; }
-  h1 { margin: 0 0 8px; text-align: center; font-size: 2rem; line-height: 1.25; color: #ddd2a8; }
-  .sub { text-align: center; font-style: italic; margin: 0 0 24px; color: #ddd2a8; }
-  p { font-size: 1.15rem; line-height: 1.7; margin: 16px 0 0; color: #ddd2a8; }
+  #t-el:checked ~ .bar-el, #t-en:checked ~ .bar-en { display: block; }
+  .bar { display: none; }
+  #t-el:checked ~ .bar-el label[for="t-el"], #t-en:checked ~ .bar-en label[for="t-en"] { border-bottom-color: currentColor; font-weight: bold; opacity: 1; }
+  #t-el:focus-visible ~ .bar-el label[for="t-el"], #t-en:focus-visible ~ .bar-en label[for="t-en"] { outline: 2px solid currentColor; outline-offset: -4px; }
+  h1 { margin: 0 0 8px; text-align: center; font-size: 2rem; line-height: 1.25; }
+  .sub { text-align: center; font-style: italic; margin: 0 0 24px; }
+  p { font-size: 1.15rem; line-height: 1.7; margin: 16px 0 0; }
   p.said { font-style: italic; }
   p.end { text-align: center; font-style: italic; font-weight: bold; margin-top: 32px; }
   @media (max-width: 480px) { h1 { font-size: 1.6rem; } p { font-size: 1.08rem; } }
-  @media print { html, body { background: #fff; } h1, p, .sub { color: #000; } .tabs { display: none; } .panel { display: block !important; page-break-before: always; } }
+  @media print { html, body { background: #fff; } .panel-el, .panel-en { background: #fff; color: #000; display: block !important; min-height: 0; page-break-before: always; } .bar { display: none !important; } }
 </style>
 </head>
 <body>
-<div class="wrap">
 <input class="radio" type="radio" name="lang" id="t-el" checked>
 <input class="radio" type="radio" name="lang" id="t-en">
-<div class="tabs">
+<div class="bar bar-el"><div class="tabs">
   <label for="t-el" lang="el">Ελληνικά</label>
   <label for="t-en" lang="en">English</label>
-</div>
-<div class="panel panel-el" lang="el">
+</div></div>
+<div class="bar bar-en"><div class="tabs">
+  <label for="t-el" lang="el">Ελληνικά</label>
+  <label for="t-en" lang="en">English</label>
+</div></div>
+<div class="panel panel-el" lang="el"><div class="inner">
 <h1>Ο Λευκός Δράκος και ο Μαύρος Δράκος</h1>
 <p class="sub">Ένα παραμύθι για τη φωτιά, την υπομονή και τη δύναμη της αποδοχής.</p>
 <p>Ψηλά στα παγωμένα βουνά του βορρά, εκεί που ο άνεμος κουβαλά παλιές ιστορίες και ο χειμώνας δεν φεύγει ποτέ εντελώς, στο πιο πυκνό σημείο του δάσους, ζούσε μια μάγισσα που την έλεγαν Χέιζελ, και δεν ήταν καθόλου κακιά.</p>
@@ -156,8 +169,8 @@
 <p>Γιατί ποτέ δεν είχε ανάγκη έναν πρίγκιπα να τη σώσει.</p>
 <p>Είχε ήδη μάθει να κυβερνά τον δικό της ουρανό.</p>
 <p class="end">Τέλος.</p>
-</div>
-<div class="panel panel-en" lang="en">
+</div></div>
+<div class="panel panel-en" lang="en"><div class="inner">
 <h1>The White Dragon and the Black Dragon</h1>
 <p class="sub">A fairy tale about fire, patience, and the power of acceptance.</p>
 <p>High in the frozen mountains of the north, where the wind carries old stories and winter never quite leaves, in the thickest part of the forest, there lived a witch called Hazel, and she was not wicked at all.</p>
@@ -279,7 +292,6 @@
 <p>Because she had never needed a prince to save her.</p>
 <p>She had already learned to rule her own sky.</p>
 <p class="end">The End.</p>
-</div>
-</div>
+</div></div>
 </body>
 </html>
