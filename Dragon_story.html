@@ -30,9 +30,11 @@
   h1 { margin: 0 0 8px; text-align: center; font-size: 2rem; line-height: 1.25; }
   .sub { text-align: center; font-style: italic; margin: 0 0 24px; }
   .listen { display: none; margin: 0 auto 8px; padding: 12px 22px; font: inherit; font-size: 1.05rem; border: 2px solid currentColor; border-radius: 28px; cursor: pointer; -webkit-appearance: none; appearance: none; }
-  .listen.on { display: block; }
+  .listen.on { display: block; position: -webkit-sticky; position: sticky; top: 10px; z-index: 5; width: -webkit-fit-content; width: fit-content; -webkit-box-shadow: 0 4px 14px rgba(0,0,0,.35); box-shadow: 0 4px 14px rgba(0,0,0,.35); }
   .panel-el .listen { background: #000; color: #fff; border-color: #000; }
   .panel-en .listen { background: #ddd2a8; color: #000; border-color: #ddd2a8; }
+  .panel-el .speaking { background: #e9e9e9; box-shadow: 0 0 0 6px #e9e9e9; border-radius: 4px; }
+  .panel-en .speaking { background: #25231b; box-shadow: 0 0 0 6px #25231b; border-radius: 4px; }
   .listen .ico { margin-right: 8px; }
   .listen:focus-visible { outline: 3px solid #888; outline-offset: 3px; }
   p { font-size: 1.15rem; line-height: 1.7; margin: 16px 0 0; }
@@ -56,7 +58,7 @@
 <div class="panel panel-el" lang="el"><div class="inner">
 <h1>Η Λευκή Δράκαινα και ο Μαύρος Δράκος</h1>
 <p class="sub">Ένα παραμύθι για τη φωτιά, την υπομονή και τη δύναμη της αποδοχής.</p>
-<button type="button" class="listen" data-lang="el-GR" data-play="Ακούστε το φωναχτά" data-stop="Διακοπή"><span class="ico" aria-hidden="true">🎧</span><span class="lbl">Ακούστε το φωναχτά</span></button>
+<button type="button" class="listen" data-lang="el-GR" data-play="Ακούστε το φωναχτά" data-pause="Παύση" data-resume="Συνέχεια"><span class="ico" aria-hidden="true">🔊</span><span class="lbl">Ακούστε το φωναχτά</span></button>
 <p>Ψηλά στα παγωμένα βουνά του βορρά, εκεί όπου ο άνεμος κουβαλά παλιές ιστορίες και ο χειμώνας δεν φεύγει ποτέ εντελώς, μέσα στο πιο πυκνό δάσος, ζούσε μια μάγισσα που τη λέγανε Χέιζελ και δεν ήταν καθόλου κακιά.</p>
 <p>Είχε διαλέξει για σπίτι της την πιο βαθιά σπηλιά του δάσους, εκεί που δεν έφτανε ούτε το φως του φεγγαριού. Το απόλυτο σκοτάδι δεν την τρόμαζε. Της άρεσε. Το φορούσε σαν ένα παλιό, βαρύ πανωφόρι, και είχε μάθει να κινείται μέσα του χωρίς να χρειάζεται να βλέπει.</p>
 <p>Και ύστερα ήρθαν δύο δράκοι να της φέρουν φως: η Λευκή Δράκαινα και ο Μαύρος Δράκος.</p>
@@ -181,7 +183,7 @@
 <div class="panel panel-en" lang="en"><div class="inner">
 <h1>The White Dragon and the Black Dragon</h1>
 <p class="sub">A fairy tale about fire, patience, and the power of acceptance.</p>
-<button type="button" class="listen" data-lang="en-US" data-play="Listen out loud" data-stop="Stop"><span class="ico" aria-hidden="true">🎧</span><span class="lbl">Listen out loud</span></button>
+<button type="button" class="listen" data-lang="en-US" data-play="Listen out loud" data-pause="Pause" data-resume="Resume"><span class="ico" aria-hidden="true">🔊</span><span class="lbl">Listen out loud</span></button>
 <p>High in the frozen mountains of the north, where the wind carries old stories and winter never quite leaves, in the thickest part of the forest, there lived a witch called Hazel, and she was not wicked at all.</p>
 <p>She had chosen for her home the deepest cave in the forest, where not even moonlight could reach. The absolute dark did not frighten her. She loved it. She wore it like an old, heavy coat, and she had learned to move through it without needing to see.</p>
 <p>And then two dragons came to bring her light: the White Dragon and the Black Dragon.</p>
@@ -307,27 +309,38 @@
   if (!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') return;
   var synth = window.speechSynthesis;
   var buttons = document.querySelectorAll('.listen');
-  var token = 0, active = null, i;
+  var token = 0, state = 'idle', active = null, queue = [], idx = 0, lang = '', voice = null, current = null, i;
 
-  function setLabel(btn, playing) {
-    btn.querySelector('.lbl').firstChild.nodeValue = playing ? btn.getAttribute('data-stop') : btn.getAttribute('data-play');
-    btn.querySelector('.ico').firstChild.nodeValue = playing ? '\u23F9' : '\uD83C\uDFA7';
+  function setBtn(btn, mode) {
+    var icons = { idle: '🔊', playing: '⏸', paused: '▶' };
+    var labels = { idle: 'data-play', playing: 'data-pause', paused: 'data-resume' };
+    btn.querySelector('.ico').firstChild.nodeValue = icons[mode];
+    btn.querySelector('.lbl').firstChild.nodeValue = btn.getAttribute(labels[mode]);
+    btn.setAttribute('aria-pressed', mode === 'playing' ? 'true' : 'false');
   }
-  function stop() {
-    token++;
-    try { synth.cancel(); } catch (e) {}
-    if (active) { setLabel(active, false); active = null; }
+  function mark(node) {
+    if (current && current !== node) current.className = current.className.replace(/\s*speaking/g, '');
+    current = node;
+    if (node && node.className.indexOf('speaking') < 0) node.className += ' speaking';
+    if (node && node.scrollIntoView) { try { node.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) { node.scrollIntoView(); } }
   }
-  function pickVoice(lang) {
-    var voices = synth.getVoices() || [], base = lang.split('-')[0], exact = null, loose = null, k;
+  function halt() { token++; try { synth.cancel(); } catch (e) {} }
+  function reset() {
+    halt();
+    if (active) setBtn(active, 'idle');
+    mark(null);
+    state = 'idle'; active = null; queue = []; idx = 0;
+  }
+  function pickVoice(l) {
+    var voices = synth.getVoices() || [], base = l.split('-')[0], exact = null, loose = null, k;
     for (k = 0; k < voices.length; k++) {
-      if (voices[k].lang === lang || voices[k].lang === lang.replace('-', '_')) { exact = exact || voices[k]; }
+      if (voices[k].lang === l || voices[k].lang === l.replace('-', '_')) { exact = exact || voices[k]; }
       else if (voices[k].lang && voices[k].lang.toLowerCase().indexOf(base) === 0) { loose = loose || voices[k]; }
     }
     return exact || loose || null;
   }
   function chunks(text) {
-    var parts = text.match(/[^.!?;\u037E\u2026]+[.!?;\u037E\u2026]*["\u201D\u00BB]*\s*/g) || [text], out = [], cur = '', k;
+    var parts = text.match(/[^.!?;;…]+[.!?;;…]*["”»]*\s*/g) || [text], out = [], cur = '', k;
     for (k = 0; k < parts.length; k++) {
       if ((cur + parts[k]).length > 180 && cur) { out.push(cur); cur = ''; }
       cur += parts[k];
@@ -335,37 +348,53 @@
     if (cur) out.push(cur);
     return out;
   }
-  function start(btn) {
-    stop();
-    var panel = btn.parentNode.parentNode, nodes = panel.querySelectorAll('h1, p'), queue = [], k, j, c;
+  function build(btn) {
+    var nodes = btn.parentNode.parentNode.querySelectorAll('h1, p'), out = [], k, j, c, t;
     for (k = 0; k < nodes.length; k++) {
-      c = chunks(nodes[k].textContent.replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, ''));
-      for (j = 0; j < c.length; j++) if (c[j].replace(/\s/g, '')) queue.push(c[j]);
+      if (nodes[k].className.indexOf('sub') >= 0 || true) {
+        t = nodes[k].textContent.replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '');
+        c = chunks(t);
+        for (j = 0; j < c.length; j++) if (c[j].replace(/\s/g, '')) out.push({ text: c[j], node: nodes[k] });
+      }
     }
-    var my = ++token, idx = 0, lang = btn.getAttribute('data-lang'), voice = pickVoice(lang);
-    active = btn; setLabel(btn, true);
+    return out;
+  }
+  function play(from) {
+    var my = ++token;
+    idx = from;
+    state = 'playing'; setBtn(active, 'playing');
     function next() {
       if (my !== token) return;
-      if (idx >= queue.length) { stop(); return; }
-      var u = new SpeechSynthesisUtterance(queue[idx++]);
+      if (idx >= queue.length) { reset(); return; }
+      var item = queue[idx++];
+      mark(item.node);
+      var u = new SpeechSynthesisUtterance(item.text);
       u.lang = lang; if (voice) u.voice = voice;
-      u.rate = 0.95;
+      u.volume = 1; u.rate = 0.95; u.pitch = 1;
       u.onend = next;
-      u.onerror = function () { if (my === token) stop(); };
+      u.onerror = function () { if (my === token) reset(); };
       synth.speak(u);
     }
     next();
   }
+  function onClick(btn) {
+    if (active === btn && state === 'playing') {      /* pause: remember where we are */
+      halt(); idx = Math.max(0, idx - 1); state = 'paused'; setBtn(btn, 'paused'); return;
+    }
+    if (active === btn && state === 'paused') { play(idx); return; }   /* resume */
+    reset();
+    active = btn; lang = btn.getAttribute('data-lang'); voice = pickVoice(lang);
+    queue = build(btn);
+    play(0);
+  }
   for (i = 0; i < buttons.length; i++) {
     buttons[i].className += ' on';
-    (function (btn) {
-      btn.onclick = function () { if (active === btn) stop(); else start(btn); };
-    })(buttons[i]);
+    (function (btn) { btn.onclick = function () { onClick(btn); }; })(buttons[i]);
   }
   var radios = document.querySelectorAll('input[name="lang"]');
-  for (i = 0; i < radios.length; i++) radios[i].onchange = stop;
-  window.onpagehide = stop;
-  window.onbeforeunload = stop;
+  for (i = 0; i < radios.length; i++) radios[i].onchange = reset;
+  window.onpagehide = reset;
+  window.onbeforeunload = reset;
 })();
 </script>
 </body>
