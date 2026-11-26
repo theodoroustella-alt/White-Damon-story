@@ -59,8 +59,8 @@ const VENUES=[
  {id:2,name:"Γήπεδο φούτσαλ Β",area:"Λευκωσία",price:55},
  {id:3,name:"Γήπεδο φούτσαλ Γ",area:"Παραλίμνι",price:50}];
 const FAKE=["Μιχάλης","Ανδρέας","Χαράλαμπος","Κυριάκος","Πάμπος","Στέλιος","Γιώργος","Νικόλας","Αντρέας Κ.","Λάκης","Χρίστος","Μάριος"];
-let S=JSON.parse(localStorage.getItem("foorpos")||"null");
-const save=()=>localStorage.setItem("foorpos",JSON.stringify(S));
+let S=null;try{S=JSON.parse(localStorage.getItem("foorpos")||"null")}catch(e){}
+const save=()=>{try{localStorage.setItem("foorpos",JSON.stringify(S))}catch(e){}};
 const $=h=>{document.getElementById("app").innerHTML=h};
 const toast=m=>{const t=document.getElementById("toast");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2200)};
 const ini=n=>n.trim()[0].toUpperCase();
@@ -118,7 +118,7 @@ function match(){
  ${meP&&!meP.paid?`<div class="sticky"><button class="btn dark" id="paybtn">Πλήρωσε το μερίδιο σου · ${fmt(per())}</button></div>`:""}`);
  back.onclick=()=>{S=null;save();create()};
  share.onclick=()=>{const t=`Φούτσαλ ${dt} ${S.time} στο ${S.venue.name}! ${fmt(per())} ο καθένας: foorpos.cy/m/${S.id}`;
-  navigator.share?navigator.share({text:t}).catch(()=>{}):(navigator.clipboard&&navigator.clipboard.writeText(t),toast("Αντιγράφτηκε το link"))};
+  (navigator.clipboard?navigator.clipboard.writeText(t).then(()=>toast("Αντιγράφτηκε το link"),()=>toast("Δεν αντιγράφτηκε")):toast("Δεν αντιγράφτηκε"))};
  sim.onclick=()=>{
   const taken=[...S.players.map(p=>p.name),...S.wait];
   const n=FAKE.find(x=>!taken.includes(x));if(!n)return toast("Τελείωσαν τα ονόματα 🙂");
