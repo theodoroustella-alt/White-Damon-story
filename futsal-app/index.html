@@ -58,7 +58,7 @@ const VENUES=[
  {id:1,name:"Γήπεδο φούτσαλ Α",area:"Στρόβολος",price:60},
  {id:2,name:"Γήπεδο φούτσαλ Β",area:"Λευκωσία",price:55},
  {id:3,name:"Γήπεδο φούτσαλ Γ",area:"Παραλίμνι",price:50}];
-const FAKE=["Περτιτζιής Μιτσοστόμος","Περτίκα μουυυ","Μιχάλης","Ανδρέας","Χαράλαμπος","Κυριάκος","Πάμπος","Στέλιος","Γιώργος","Νικόλας","Αντρέας Κ.","Λάκης","Χρίστος","Μάριος"];
+const FAKE=["Περτιτζιής Μιτσοστόμος","Περτίκα μουυυ","Περδικιός","Ανδρέας","Χαράλαμπος","Κυριάκος","Πάμπος","Στέλιος","Γιώργος","Νικόλας","Αντρέας Κ.","Λάκης","Χρίστος","Μάριος"];
 let S=null;try{S=JSON.parse(localStorage.getItem("foorpos")||"null")}catch(e){}
 const save=()=>{try{localStorage.setItem("foorpos",JSON.stringify(S))}catch(e){}};
 const $=h=>{document.getElementById("app").innerHTML=h};
@@ -73,7 +73,7 @@ function create(){
  const v=VENUES[0];
  $(`<header><div class="logo">⚽ FOOrpos · ΦΟΥΤΣΑΛ</div><h1>Πάμε φούτσαλ;</h1><p>Κλείσε το φούτσαλ, στείλε το link, τζιαι ο καθένας πληρώνει το δικό του.</p></header>
  <main>
- <label>Το όνομα σου</label><input id="me" placeholder="π.χ. Μιχάλης" value="Μιχάλης">
+ <label>Το όνομα σου</label><input id="me" placeholder="π.χ. Περδικιός" value="Περδικιός">
  <label>Γήπεδο</label><select id="venue">${VENUES.map(v=>`<option value="${v.id}">${v.name} – ${v.area} (${fmt(v.price)}/ώρα)</option>`).join("")}</select>
  <div class="row"><div><label>Μέρα</label><input id="day" type="date"></div><div><label>Ώρα</label><input id="time" type="time" value="21:00"></div></div>
  <label>Πόσοι παίζετε</label>
