@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Παρέα Φούτσαλ</title>
+<title>FOOrpos – φούτσαλ με την παρέα</title>
 <style>
 :root{--g:#2a1250;--g2:#6d3fc7;--lime:#d9b8ff;--ink:#0d1b16;--card:#f7f3fd;--mut:#6b7a73;--red:#e5484d;--line:#ddd3ee}
 *{box-sizing:border-box;margin:0}
@@ -59,8 +59,8 @@ const VENUES=[
  {id:2,name:"Γήπεδο φούτσαλ Β",area:"Λευκωσία",price:55},
  {id:3,name:"Γήπεδο φούτσαλ Γ",area:"Παραλίμνι",price:50}];
 const FAKE=["Μιχάλης","Ανδρέας","Χαράλαμπος","Κυριάκος","Πάμπος","Στέλιος","Γιώργος","Νικόλας","Αντρέας Κ.","Λάκης","Χρίστος","Μάριος"];
-let S=JSON.parse(localStorage.getItem("parea")||"null");
-const save=()=>localStorage.setItem("parea",JSON.stringify(S));
+let S=JSON.parse(localStorage.getItem("foorpos")||"null");
+const save=()=>localStorage.setItem("foorpos",JSON.stringify(S));
 const $=h=>{document.getElementById("app").innerHTML=h};
 const toast=m=>{const t=document.getElementById("toast");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2200)};
 const ini=n=>n.trim()[0].toUpperCase();
@@ -71,7 +71,7 @@ const locked=()=>paidN()===S.cap;
 
 function create(){
  const v=VENUES[0];
- $(`<header><div class="logo">⚽ ΠΑΡΕΑ · ΦΟΥΤΣΑΛ</div><h1>Πάμε φούτσαλ;</h1><p>Κλείσε το φούτσαλ, στείλε το link, τζιαι ο καθένας πληρώνει το δικό του.</p></header>
+ $(`<header><div class="logo">⚽ FOOrpos · ΦΟΥΤΣΑΛ</div><h1>Πάμε φούτσαλ;</h1><p>Κλείσε το φούτσαλ, στείλε το link, τζιαι ο καθένας πληρώνει το δικό του.</p></header>
  <main>
  <label>Το όνομα σου</label><input id="me" placeholder="π.χ. Μιχάλης" value="Μιχάλης">
  <label>Γήπεδο</label><select id="venue">${VENUES.map(v=>`<option value="${v.id}">${v.name} – ${v.area} (${fmt(v.price)}/ώρα)</option>`).join("")}</select>
@@ -109,7 +109,7 @@ function match(){
   <div class="meta"><span>${pn} από ${S.cap} πλήρωσαν</span><span>${fmt(per())} ο καθένας</span></div>
   <p class="meta" style="margin-top:10px">${L?"Όλα έτοιμα. Τα λέμε στο φούτσαλ!":"Κλειδώνει σαν πληρώσουν όλοι οι "+S.cap+"."}</p></div>
  <label>Link πρόσκλησης</label>
- <div class="link"><span style="flex:1">parea.cy/m/${S.id}</span><button class="mini go" id="share">Στείλε</button></div>
+ <div class="link"><span style="flex:1">foorpos.cy/m/${S.id}</span><button class="mini go" id="share">Στείλε</button></div>
  <h2>Παίχτες (${S.players.length}/${S.cap})</h2><div class="card" style="padding:4px 14px">${rows}</div>
  ${S.wait.length?`<h2>Λίστα αναμονής</h2><div class="card" style="padding:4px 14px">${wait}</div>`:""}
  <button class="btn ghost" id="sim" style="margin-top:6px">+ Προσομοίωση: μπαίνει νέος παίχτης</button>
@@ -117,7 +117,7 @@ function match(){
  </main>
  ${meP&&!meP.paid?`<div class="sticky"><button class="btn dark" id="paybtn">Πλήρωσε το μερίδιο σου · ${fmt(per())}</button></div>`:""}`);
  back.onclick=()=>{S=null;save();create()};
- share.onclick=()=>{const t=`Φούτσαλ ${dt} ${S.time} στο ${S.venue.name}! ${fmt(per())} ο καθένας: parea.cy/m/${S.id}`;
+ share.onclick=()=>{const t=`Φούτσαλ ${dt} ${S.time} στο ${S.venue.name}! ${fmt(per())} ο καθένας: foorpos.cy/m/${S.id}`;
   navigator.share?navigator.share({text:t}).catch(()=>{}):(navigator.clipboard&&navigator.clipboard.writeText(t),toast("Αντιγράφτηκε το link"))};
  sim.onclick=()=>{
   const taken=[...S.players.map(p=>p.name),...S.wait];
