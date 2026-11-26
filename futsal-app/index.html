@@ -58,7 +58,7 @@ const VENUES=[
  {id:1,name:"Γήπεδο φούτσαλ Α",area:"Στρόβολος",price:60},
  {id:2,name:"Γήπεδο φούτσαλ Β",area:"Λευκωσία",price:55},
  {id:3,name:"Γήπεδο φούτσαλ Γ",area:"Παραλίμνι",price:50}];
-const FAKE=["Μιχάλης","Ανδρέας","Χαράλαμπος","Κυριάκος","Πάμπος","Στέλιος","Γιώργος","Νικόλας","Αντρέας Κ.","Λάκης","Χρίστος","Μάριος"];
+const FAKE=["Περτιτζιής Μιτσοστόμος","Περτίκα μουυυ","Μιχάλης","Ανδρέας","Χαράλαμπος","Κυριάκος","Πάμπος","Στέλιος","Γιώργος","Νικόλας","Αντρέας Κ.","Λάκης","Χρίστος","Μάριος"];
 let S=null;try{S=JSON.parse(localStorage.getItem("foorpos")||"null")}catch(e){}
 const save=()=>{try{localStorage.setItem("foorpos",JSON.stringify(S))}catch(e){}};
 const $=h=>{document.getElementById("app").innerHTML=h};
