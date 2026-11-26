@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Παρέα – το ματς της παρέας</title>
+<title>Παρέα Φούτσαλ</title>
 <style>
-:root{--g:#0b3d2e;--g2:#12553f;--lime:#c6f432;--ink:#0d1b16;--card:#f6f4ec;--mut:#6b7a73;--red:#e5484d;--line:#dcd9cc}
+:root{--g:#2a1250;--g2:#6d3fc7;--lime:#d9b8ff;--ink:#0d1b16;--card:#f7f3fd;--mut:#6b7a73;--red:#e5484d;--line:#ddd3ee}
 *{box-sizing:border-box;margin:0}
 body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--g);color:var(--ink);min-height:100vh;display:flex;justify-content:center}
 #app{width:100%;max-width:430px;min-height:100vh;background:var(--card);position:relative;padding-bottom:90px}
-header{background:var(--g);color:#fff;padding:22px 20px 26px;background-image:repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.04) 38px 76px)}
+header{background:var(--g);color:#fff;padding:22px 20px 26px;background-image:repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.05) 38px 76px)}
 header .logo{font-weight:900;letter-spacing:.5px;font-size:15px;color:var(--lime)}
 header h1{font-size:27px;line-height:1.1;margin-top:10px;font-weight:900}
 header p{opacity:.8;margin-top:6px;font-size:14px}
@@ -38,7 +38,7 @@ h2{font-size:15px;margin:20px 0 10px;text-transform:uppercase;letter-spacing:.5p
 .pl.empty .av{background:transparent;border:2px dashed var(--line);color:var(--mut)}
 .pl .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}.pl.empty .n{color:var(--mut);font-weight:500}
 .tag{white-space:nowrap;font-size:11px;font-weight:800;padding:4px 10px;border-radius:12px}
-.t-paid{background:#d7f5c6;color:#1c5a0c}.t-pend{background:#ffe2e2;color:#9b1c1f}.t-q{background:#e8e6da;color:#555}
+.t-paid{background:#e4d4fb;color:#3b1a7a}.t-pend{background:#ffe2e2;color:#9b1c1f}.t-q{background:#ebe6f3;color:#555}
 .mini{border:0;background:#eee;border-radius:10px;padding:6px 9px;font-size:12px;font-weight:700;cursor:pointer;margin-left:0;white-space:nowrap}
 .mini.go{background:var(--g);color:#fff}
 .sticky{position:fixed;bottom:0;width:100%;max-width:430px;background:var(--card);padding:12px 20px 18px;border-top:2px solid var(--line)}
@@ -55,9 +55,9 @@ a.back{color:var(--lime);font-size:13px;font-weight:700;text-decoration:none;cur
 <div class="toast" id="toast"></div>
 <script>
 const VENUES=[
- {id:1,name:"Γήπεδο Α",area:"Στρόβολος",price:60},
- {id:2,name:"Γήπεδο Β",area:"Λευκωσία",price:55},
- {id:3,name:"Γήπεδο Γ",area:"Παραλίμνι",price:50}];
+ {id:1,name:"Γήπεδο φούτσαλ Α",area:"Στρόβολος",price:60},
+ {id:2,name:"Γήπεδο φούτσαλ Β",area:"Λευκωσία",price:55},
+ {id:3,name:"Γήπεδο φούτσαλ Γ",area:"Παραλίμνι",price:50}];
 const FAKE=["Μιχάλης","Ανδρέας","Χαράλαμπος","Κυριάκος","Πάμπος","Στέλιος","Γιώργος","Νικόλας","Αντρέας Κ.","Λάκης","Χρίστος","Μάριος"];
 let S=JSON.parse(localStorage.getItem("parea")||"null");
 const save=()=>localStorage.setItem("parea",JSON.stringify(S));
@@ -71,15 +71,15 @@ const locked=()=>paidN()===S.cap;
 
 function create(){
  const v=VENUES[0];
- $(`<header><div class="logo">⚽ ΠΑΡΕΑ</div><h1>Πάμε γιά μπάλα;</h1><p>Κλείσε το ματς, στείλε το link, τζιαι ο καθένας πληρώνει το δικό του.</p></header>
+ $(`<header><div class="logo">⚽ ΠΑΡΕΑ · ΦΟΥΤΣΑΛ</div><h1>Πάμε φούτσαλ;</h1><p>Κλείσε το φούτσαλ, στείλε το link, τζιαι ο καθένας πληρώνει το δικό του.</p></header>
  <main>
  <label>Το όνομα σου</label><input id="me" placeholder="π.χ. Μιχάλης" value="Μιχάλης">
  <label>Γήπεδο</label><select id="venue">${VENUES.map(v=>`<option value="${v.id}">${v.name} – ${v.area} (${fmt(v.price)}/ώρα)</option>`).join("")}</select>
  <div class="row"><div><label>Μέρα</label><input id="day" type="date"></div><div><label>Ώρα</label><input id="time" type="time" value="21:00"></div></div>
  <label>Πόσοι παίζετε</label>
- <select id="cap"><option>6</option><option>8</option><option selected>10</option><option>12</option></select>
+ <select id="cap"><option value="10" selected>5 εναντίον 5 (10 παίχτες)</option><option value="12">6 εναντίον 6 (12 παίχτες)</option><option value="8">4 εναντίον 4 (8 παίχτες)</option></select>
  <div class="price"><span>Μερίδιο ανά παίχτη</span><b id="pp"></b></div>
- <button class="btn" id="go">Φτιάξε το ματς</button>
+ <button class="btn" id="go">Φτιάξε το φούτσαλ</button>
  <p class="hint">Το γήπεδο κλειδώνει μόνο σαν πληρώσουν όλοι. Αν κάποιος εν έρκεται, μπαίνει αυτόματα ο πρώτος από την αναμονή.</p>
  </main>`);
  const d=new Date();d.setDate(d.getDate()+2);day.value=d.toISOString().slice(0,10);
@@ -107,7 +107,7 @@ function match(){
  <div class="card"><span class="badge ${L?"b-lock":"b-wait"}">${L?"🔒 Το γήπεδο κλείδωσε":"⏳ Περιμένουμε πληρωμές"}</span>
   <div class="bar"><i style="width:${pn/S.cap*100}%"></i></div>
   <div class="meta"><span>${pn} από ${S.cap} πλήρωσαν</span><span>${fmt(per())} ο καθένας</span></div>
-  <p class="meta" style="margin-top:10px">${L?"Όλα έτοιμα. Τα λέμε στο γήπεδο!":"Κλειδώνει σαν πληρώσουν όλοι οι "+S.cap+"."}</p></div>
+  <p class="meta" style="margin-top:10px">${L?"Όλα έτοιμα. Τα λέμε στο φούτσαλ!":"Κλειδώνει σαν πληρώσουν όλοι οι "+S.cap+"."}</p></div>
  <label>Link πρόσκλησης</label>
  <div class="link"><span style="flex:1">parea.cy/m/${S.id}</span><button class="mini go" id="share">Στείλε</button></div>
  <h2>Παίχτες (${S.players.length}/${S.cap})</h2><div class="card" style="padding:4px 14px">${rows}</div>
@@ -117,7 +117,7 @@ function match(){
  </main>
  ${meP&&!meP.paid?`<div class="sticky"><button class="btn dark" id="paybtn">Πλήρωσε το μερίδιο σου · ${fmt(per())}</button></div>`:""}`);
  back.onclick=()=>{S=null;save();create()};
- share.onclick=()=>{const t=`Παίζουμε ${dt} ${S.time} στο ${S.venue.name}! ${fmt(per())} ο καθένας: parea.cy/m/${S.id}`;
+ share.onclick=()=>{const t=`Φούτσαλ ${dt} ${S.time} στο ${S.venue.name}! ${fmt(per())} ο καθένας: parea.cy/m/${S.id}`;
   navigator.share?navigator.share({text:t}).catch(()=>{}):(navigator.clipboard&&navigator.clipboard.writeText(t),toast("Αντιγράφτηκε το link"))};
  sim.onclick=()=>{
   const taken=[...S.players.map(p=>p.name),...S.wait];
