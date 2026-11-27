@@ -48,6 +48,24 @@ h2{font-size:15px;margin:20px 0 10px;text-transform:uppercase;letter-spacing:.5p
 .hint{font-size:12px;color:var(--mut);margin-top:16px;line-height:1.5;border-left:3px solid var(--lime);padding-left:10px}
 .link{display:flex;gap:8px;align-items:center;background:#fff;border:2px dashed var(--g2);border-radius:12px;padding:10px 12px;font-size:13px;word-break:break-all}
 a.back{color:var(--lime);font-size:13px;font-weight:700;text-decoration:none;cursor:pointer}
+
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg button{flex:1;min-width:120px;text-align:left;padding:12px;border:2px solid var(--line);border-radius:12px;background:#fff;font-size:14px;font-weight:700;cursor:pointer;color:var(--ink)}
+.seg button small{display:block;font-weight:500;color:var(--mut);margin-top:3px;font-size:12px}
+.seg button.on{border-color:var(--g2);background:#e9f6df}
+.sw{display:flex;align-items:center;gap:12px;background:#fff;border:2px solid var(--line);border-radius:12px;padding:12px;margin-top:14px;cursor:pointer;font-weight:700;font-size:14px}
+.sw i{flex:none;width:44px;height:26px;border-radius:14px;background:#ccc;position:relative;transition:.2s}
+.sw i:after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
+.sw.on i{background:var(--g2)}.sw.on i:after{left:21px}
+.sw small{display:block;font-weight:500;color:var(--mut);font-size:12px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.tg{font-size:12px;font-weight:800;padding:5px 10px;border-radius:14px;background:#e8ecdc;color:#2c4a1f}
+.tg.f{background:#ffd9ec;color:#8a1b55}.tg.l{background:#ffe9b8;color:#6b4800}
+.om{margin-bottom:12px}.om.dis{opacity:.55}
+.om h3{font-size:16px}.om .why{font-size:13px;color:var(--red);font-weight:700;margin-top:8px}
+.om .btn{margin-top:12px;padding:12px;font-size:15px}
+.chip{display:flex;justify-content:space-between;align-items:center;background:#fff;border:2px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:14px}
+.chip a{color:var(--g2);font-weight:800;font-size:13px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -58,51 +76,130 @@ const VENUES=[
  {id:1,name:"Γήπεδο φούτσαλ Α",area:"Στρόβολος",price:60},
  {id:2,name:"Γήπεδο φούτσαλ Β",area:"Λευκωσία",price:55},
  {id:3,name:"Γήπεδο φούτσαλ Γ",area:"Παραλίμνι",price:50}];
-const FAKE=["Περτιτζιής Μιτσοστόμος","Περτίκα μουυυ","Περδικιός","Ανδρέας","Χαράλαμπος","Κυριάκος","Πάμπος","Στέλιος","Γιώργος","Νικόλας","Αντρέας Κ.","Λάκης","Χρίστος","Μάριος"];
-let S=null;try{S=JSON.parse(localStorage.getItem("foorpos")||"null")}catch(e){}
-const save=()=>{try{localStorage.setItem("foorpos",JSON.stringify(S))}catch(e){}};
+const FAKE=["Περτιτζιής Μιτσοστόμος","Περτίκα μουυυ","Περδικιός","Ανδρέας","Χαράλαμπος","Κυριάκος","Πάμπος","Στέλιος","Γιώργος","Νικόλας","Λάκης","Χρίστος","Μάριος"];
+const FAKE_F=["Περτίκα μουυυ","Ελένη","Μαρίνα","Χριστίνα","Ανδρούλα","Σοφία","Κλαίρη","Μαρία","Έλλη","Νάσια"];
+const load=k=>{try{return JSON.parse(localStorage.getItem(k)||"null")}catch(e){return null}};
+const store=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+let P=load("foorpos_me"),S=load("foorpos");
+const save=()=>store("foorpos",S),saveP=()=>store("foorpos_me",P);
 const $=h=>{document.getElementById("app").innerHTML=h};
-const toast=m=>{const t=document.getElementById("toast");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2200)};
+const toast=m=>{const t=document.getElementById("toast");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2400)};
 const ini=n=>n.trim()[0].toUpperCase();
-const paidN=()=>S.players.filter(p=>p.paid).length;
-const per=()=>(S.venue.price/S.cap);
 const fmt=v=>"€"+v.toFixed(2).replace(".00","");
+const paidN=()=>S.players.filter(p=>p.paid).length;
+const per=()=>S.venue.price/S.cap;
 const locked=()=>paidN()===S.cap;
+const tags=m=>`<div class="tags"><span class="tg ${m.mode==="level"?"l":""}">${m.mode==="level"?"🎯 Επίπεδο τακτικών":"😄 Για πλάκα"}</span>${m.womenOnly?'<span class="tg f">♀ Μόνο γυναίκες</span>':""}${m.open?'<span class="tg">🔓 Ανοιχτό ματς</span>':""}</div>`;
+const modeTxt=m=>m==="level"?"Μόνο στο επίπεδο μου":"Για πλάκα";
 
-function create(){
- const v=VENUES[0];
- $(`<header><div class="logo">⚽ FOOrpos · ΦΟΥΤΣΑΛ</div><h1>Πάμε φούτσαλ;</h1><p>Κλείσε το φούτσαλ, στείλε το link, τζιαι ο καθένας πληρώνει το δικό του.</p></header>
+/* ---- προφίλ ---- */
+function setup(){
+ const d={name:P?P.name:"",gender:P?P.gender:"F",mode:P?P.mode:"fun",onlyWomen:P?P.onlyWomen:false};
+ const draw=()=>{
+  $(`<header><div class="logo">⚽ FOOrpos · ΦΟΥΤΣΑΛ</div><h1>${P?"Οι επιλογές σου":"Πες μας δυο πράματα"}</h1><p>Μισό λεπτό. Τα αλλάζεις όποτε θέλεις.</p></header>
+  <main>
+  <label>Το όνομα σου</label><input id="nm" value="${d.name}" placeholder="π.χ. Στέλλα">
+  <label>Είμαι</label>
+  <div class="seg" id="gd"><button data-v="F" class="${d.gender==="F"?"on":""}">Γυναίκα</button><button data-v="M" class="${d.gender==="M"?"on":""}">Άντρας</button><button data-v="N" class="${d.gender==="N"?"on":""}">Προτιμώ να μεν πω</button></div>
+  <label>Πώς θέλεις να παίζεις</label>
+  <div class="seg" id="md">
+   <button data-v="fun" class="${d.mode==="fun"?"on":""}">😄 Για πλάκα<small>Εν ξέρω φούτσαλ ή εν με νοιάζει το επίπεδο</small></button>
+   <button data-v="level" class="${d.mode==="level"?"on":""}">🎯 Στο επίπεδο μου<small>Ξέρω μπάλα. Θέλω ματς με παίχτες σαν εμένα</small></button></div>
+  ${d.gender==="F"?`<div class="sw ${d.onlyWomen?"on":""}" id="ow"><i></i><span>Παίζω μόνο με γυναίκες<small>Θα βλέπεις μόνο ματς με γυναίκες</small></span></div>`:""}
+  <button class="btn" id="ok">Πάμε</button>
+  <p class="hint">Θα σου δείχνουμε μόνο ματς που ταιριάζουν με τις επιλογές σου.</p></main>`);
+  nm.oninput=()=>d.name=nm.value;
+  document.querySelectorAll("#gd button").forEach(b=>b.onclick=()=>{d.gender=b.dataset.v;if(d.gender!=="F")d.onlyWomen=false;draw()});
+  document.querySelectorAll("#md button").forEach(b=>b.onclick=()=>{d.mode=b.dataset.v;draw()});
+  const ow=document.getElementById("ow");if(ow)ow.onclick=()=>{d.onlyWomen=!d.onlyWomen;draw()};
+  ok.onclick=()=>{if(!d.name.trim())return toast("Γράψε το όνομα σου");P={...d,name:d.name.trim()};saveP();home()};
+ };draw();
+}
+
+/* ---- αρχική ---- */
+function home(){
+ if(!P)return setup();
+ $(`<header><div class="logo">⚽ FOOrpos · ΦΟΥΤΣΑΛ</div><h1>Πάμε φούτσαλ;</h1><p>Κλείσε ματς ή μπες σε ματς που έχει ήδη θέση.</p></header>
  <main>
- <label>Το όνομα σου</label><input id="me" placeholder="π.χ. Περδικιός" value="Περδικιός">
+ <div class="chip"><div><b>${P.name}</b><div class="tags">${tags({mode:P.mode,womenOnly:P.onlyWomen})}</div></div><a id="ed">αλλαγή</a></div>
+ ${S?`<div class="card"><b>Το ματς σου</b><div class="meta"><span>${S.venue.name}</span><span>${S.dayText||S.time}</span></div><button class="btn dark" id="cur" style="margin-top:12px;padding:12px;font-size:15px">Άνοιξε το</button></div>`:""}
+ <button class="btn" id="mk">Φτιάξε ματς</button>
+ <button class="btn dark" id="fd">Βρες ανοιχτό ματς</button>
+ <p class="hint">Εν έχεις παρέα ή σου λείπουν παίχτες; Μπες σε ανοιχτό ματς. Τα γήπεδα είναι ήδη κλεισμένα, οπότε εν παίρνεις τη θέση κανενός.</p></main>`);
+ ed.onclick=setup;mk.onclick=create;fd.onclick=openList;
+ const c=document.getElementById("cur");if(c)c.onclick=match;
+}
+
+/* ---- δημιουργία ---- */
+function create(){
+ const v=VENUES[0];let open=false;
+ const draw=()=>{
+ $(`<header><a class="back" id="back">← αρχική</a><h1>Φτιάξε ματς</h1>${tags({mode:P.mode,womenOnly:P.onlyWomen,open})}</header>
+ <main>
  <label>Γήπεδο</label><select id="venue">${VENUES.map(v=>`<option value="${v.id}">${v.name} – ${v.area} (${fmt(v.price)}/ώρα)</option>`).join("")}</select>
  <div class="row"><div><label>Μέρα</label><input id="day" type="date"></div><div><label>Ώρα</label><input id="time" type="time" value="21:00"></div></div>
  <label>Πόσοι παίζετε</label>
  <select id="cap"><option value="10" selected>5 εναντίον 5 (10 παίχτες)</option><option value="12">6 εναντίον 6 (12 παίχτες)</option><option value="8">4 εναντίον 4 (8 παίχτες)</option></select>
+ <div class="sw ${open?"on":""}" id="op"><i></i><span>Άνοιξε το ματς σε άλλες παρέες<small>Άλλοι με τις ίδιες επιλογές μπορούν να ζητήσουν θέση</small></span></div>
  <div class="price"><span>Μερίδιο ανά παίχτη</span><b id="pp"></b></div>
  <button class="btn" id="go">Φτιάξε το φούτσαλ</button>
- <p class="hint">Το γήπεδο κλειδώνει μόνο σαν πληρώσουν όλοι. Αν κάποιος εν έρκεται, μπαίνει αυτόματα ο πρώτος από την αναμονή.</p>
- </main>`);
+ <p class="hint">Το ματς παίρνει αυτόματα τις επιλογές σου (${modeTxt(P.mode)}${P.onlyWomen?", μόνο γυναίκες":""}).</p></main>`);
  const d=new Date();d.setDate(d.getDate()+2);day.value=d.toISOString().slice(0,10);
- const upd=()=>pp.textContent=fmt(VENUES.find(x=>x.id==venue.value).price/ +cap.value);
+ const upd=()=>pp.textContent=fmt(VENUES.find(x=>x.id==venue.value).price/+cap.value);
  venue.onchange=cap.onchange=upd;upd();
+ back.onclick=home;op.onclick=()=>{open=!open;const keep={v:venue.value,d:day.value,t:time.value,c:cap.value};draw();venue.value=keep.v;day.value=keep.d;time.value=keep.t;cap.value=keep.c;upd()};
  go.onclick=()=>{
-  S={me:me.value.trim()||"Εγώ",venue:VENUES.find(x=>x.id==venue.value),day:day.value,time:time.value,cap:+cap.value,
-     players:[{name:me.value.trim()||"Εγώ",paid:false}],wait:[],id:Math.random().toString(36).slice(2,7)};
-  save();match();
- };
+  S={me:P.name,venue:VENUES.find(x=>x.id==venue.value),day:day.value,time:time.value,cap:+cap.value,
+     players:[{name:P.name,paid:false}],wait:[],id:Math.random().toString(36).slice(2,7),
+     open,mode:P.mode,womenOnly:P.onlyWomen};
+  save();match();};
+ };draw();
 }
 
+/* ---- ανοιχτά ματς ---- */
+const OPEN=[
+ {host:"4 άντρες",dayText:"Δευτέρα 20:00",venue:0,cap:8,players:["Ανδρέας","Χαράλαμπος","Κυριάκος","Πάμπος"],mode:"fun",womenOnly:false,note:"Μας λείπει αντίπαλη παρέα. Παίζουμε για πλάκα!"},
+ {host:"5 κοπέλες",dayText:"Τετάρτη 19:00",venue:1,cap:10,players:["Ελένη","Μαρίνα","Χριστίνα","Ανδρούλα","Σοφία"],mode:"fun",womenOnly:true,note:"Μόνο κοπέλες, καθόλου πίεση."},
+ {host:"Τακτικοί",dayText:"Πέμπτη 21:00",venue:0,cap:10,players:["Στέλιος","Γιώργος","Νικόλας","Λάκης","Χρίστος","Μάριος","Περδικιός"],mode:"level",womenOnly:false,note:"Ψάχνουμε 3 με καλό επίπεδο."},
+ {host:"Παρέα Λεμεσού",dayText:"Παρασκευή 18:30",venue:2,cap:10,players:["Περτιτζιής Μιτσοστόμος","Πάμπος","Κυριάκος","Ανδρέας","Λάκης","Στέλιος"],mode:"fun",womenOnly:false,note:"Μεικτό, όποιος θέλει να κλωτσήσει."}];
+function why(m){
+ if(m.womenOnly&&P.gender!=="F")return "Μόνο για γυναίκες";
+ if(P.onlyWomen&&!m.womenOnly)return "Εσύ επέλεξες να παίζεις μόνο με γυναίκες";
+ if(m.mode!==P.mode)return m.mode==="level"?"Για τακτικούς παίχτες, εσύ θέλεις «για πλάκα»":"Είναι «για πλάκα», εσύ θέλεις μόνο το επίπεδο σου";
+ return "";
+}
+function openList(){
+ const L=OPEN.map(m=>({m,r:why(m)})).sort((a,b)=>(a.r?1:0)-(b.r?1:0));
+ const okN=L.filter(x=>!x.r).length;
+ $(`<header><a class="back" id="back">← αρχική</a><h1>Ανοιχτά ματς</h1><p>${okN} ταιριάζουν με τις επιλογές σου</p>${tags({mode:P.mode,womenOnly:P.onlyWomen})}</header>
+ <main>${L.map(({m,r},i)=>{const v=VENUES[m.venue];const free=m.cap-m.players.length;
+  return `<div class="card om ${r?"dis":""}"><h3>${m.host} · ${m.dayText}</h3>
+   <div class="meta"><span>${v.name}, ${v.area}</span><span>${fmt(v.price/m.cap)} ο καθένας</span></div>
+   ${tags({...m,open:false})}<p class="meta" style="margin-top:10px">${m.note}</p>
+   <p class="meta"><span><b>${m.players.length}/${m.cap}</b> παίχτες · ${free} ελεύθερες θέσεις</span></p>
+   ${r?`<div class="why">🚫 ${r}</div>`:`<button class="btn" data-j="${OPEN.indexOf(m)}">Ζήτα θέση</button>`}</div>`}).join("")}
+ <p class="hint">Τα ματς που δεν ταιριάζουν φαίνονται θαμπά με τον λόγο. Αλλάζεις επιλογές από την αρχική.</p></main>`);
+ back.onclick=home;
+ document.querySelectorAll("[data-j]").forEach(b=>b.onclick=()=>{
+  const m=OPEN[+b.dataset.j];
+  S={me:P.name,venue:VENUES[m.venue],dayText:m.dayText,time:m.dayText.split(" ")[1],cap:m.cap,
+     players:[...m.players.map(n=>({name:n,paid:true})),{name:P.name,paid:false}],wait:[],id:Math.random().toString(36).slice(2,7),
+     open:true,mode:m.mode,womenOnly:m.womenOnly,host:m.host};
+  save();toast("Μπήκες στο ματς των «"+m.host+"»");match();});
+}
+
+/* ---- σελίδα ματς ---- */
 function match(){
- const full=S.players.length>=S.cap, pn=paidN(), L=locked();
+ const pn=paidN(),L=locked();
  const meP=S.players.find(p=>p.name===S.me);
- const dt=new Date(S.day+"T"+S.time).toLocaleDateString("el-GR",{weekday:"long",day:"numeric",month:"long"});
+ const dt=S.dayText||new Date(S.day+"T"+S.time).toLocaleDateString("el-GR",{weekday:"long",day:"numeric",month:"long"})+" · "+S.time;
  let rows=S.players.map((p,i)=>`<div class="pl"><div class="av">${ini(p.name)}</div><div class="n">${p.name}${p.name===S.me?" (εσύ)":""}</div>
    <span class="tag ${p.paid?"t-paid":"t-pend"}">${p.paid?"Πλήρωσε ✓":"Εκκρεμεί"}</span>
    ${!p.paid&&p.name!==S.me?`<button class="mini go" data-pay="${i}">πλήρωσε</button>`:""}
    ${p.name!==S.me?`<button class="mini" data-out="${i}">✕</button>`:""}</div>`).join("");
- for(let i=S.players.length;i<S.cap;i++) rows+=`<div class="pl empty"><div class="av">+</div><div class="n">Έσιει θέση</div></div>`;
+ for(let i=S.players.length;i<S.cap;i++)rows+=`<div class="pl empty"><div class="av">+</div><div class="n">Έσιει θέση</div></div>`;
  const wait=S.wait.map((n,i)=>`<div class="pl"><div class="av">${ini(n)}</div><div class="n">${n}</div><span class="tag t-q">αναμονή #${i+1}</span></div>`).join("");
- $(`<header><a class="back" id="back">← νέο ματς</a><h1>${S.venue.name}, ${S.venue.area}</h1><p>${dt} · ${S.time} · ${S.cap} παίχτες</p></header>
+ $(`<header><a class="back" id="back">← αρχική</a><h1>${S.venue.name}, ${S.venue.area}</h1><p>${dt} · ${S.cap} παίχτες</p>${tags(S)}</header>
  <main>
  <div class="card"><span class="badge ${L?"b-lock":"b-wait"}">${L?"🔒 Το γήπεδο κλείδωσε":"⏳ Περιμένουμε πληρωμές"}</span>
   <div class="bar"><i style="width:${pn/S.cap*100}%"></i></div>
@@ -113,32 +210,29 @@ function match(){
  <h2>Παίχτες (${S.players.length}/${S.cap})</h2><div class="card" style="padding:4px 14px">${rows}</div>
  ${S.wait.length?`<h2>Λίστα αναμονής</h2><div class="card" style="padding:4px 14px">${wait}</div>`:""}
  <button class="btn ghost" id="sim" style="margin-top:6px">+ Προσομοίωση: μπαίνει νέος παίχτης</button>
- <p class="hint">Πρωτότυπο: οι πληρωμές είναι ψεύτικες. Τα κουμπιά «πλήρωσε» τζιαι «✕» δείχνουν πώς θα δουλεύει όταν πατούν οι άλλοι από το δικό τους κινητό.</p>
+ <p class="hint">Πρωτότυπο: οι πληρωμές είναι ψεύτικες. Οι νέοι παίχτες της προσομοίωσης σέβονται τους κανόνες του ματς${S.womenOnly?" (εδώ μπαίνουν μόνο γυναίκες)":""}.</p>
  </main>
  ${meP&&!meP.paid?`<div class="sticky"><button class="btn dark" id="paybtn">Πλήρωσε το μερίδιο σου · ${fmt(per())}</button></div>`:""}`);
- back.onclick=()=>{S=null;save();create()};
- share.onclick=()=>{const t=`Φούτσαλ ${dt} ${S.time} στο ${S.venue.name}! ${fmt(per())} ο καθένας: foorpos.cy/m/${S.id}`;
-  (navigator.clipboard?navigator.clipboard.writeText(t).then(()=>toast("Αντιγράφτηκε το link"),()=>toast("Δεν αντιγράφτηκε")):toast("Δεν αντιγράφτηκε"))};
+ back.onclick=home;
+ share.onclick=()=>{const t=`Φούτσαλ ${dt} στο ${S.venue.name}! ${fmt(per())} ο καθένας: foorpos.cy/m/${S.id}`;
+  navigator.clipboard?navigator.clipboard.writeText(t).then(()=>toast("Αντιγράφτηκε το link"),()=>toast("Δεν αντιγράφτηκε")):toast("Δεν αντιγράφτηκε")};
  sim.onclick=()=>{
-  const taken=[...S.players.map(p=>p.name),...S.wait];
-  const n=FAKE.find(x=>!taken.includes(x));if(!n)return toast("Τελείωσαν τα ονόματα 🙂");
+  const pool=S.womenOnly?FAKE_F:FAKE;const taken=[...S.players.map(p=>p.name),...S.wait];
+  const n=pool.find(x=>!taken.includes(x));if(!n)return toast("Τελείωσαν τα ονόματα 🙂");
   if(S.players.length<S.cap){S.players.push({name:n,paid:false});toast(n+" μπήκε στο ματς")}
-  else{S.wait.push(n);toast("Γεμάτο. Ο "+n+" πάει στην αναμονή")}
+  else{S.wait.push(n);toast("Γεμάτο. Ο/η "+n+" πάει στην αναμονή")}
   save();match();};
  document.querySelectorAll("[data-pay]").forEach(b=>b.onclick=()=>{
-  S.players[+b.dataset.pay].paid=true;
-  if(locked())toast("🔒 Όλοι πλήρωσαν. Κλείδωσε το γήπεδο!");
-  save();match();});
+  S.players[+b.dataset.pay].paid=true;if(locked())toast("🔒 Όλοι πλήρωσαν. Κλείδωσε το γήπεδο!");save();match();});
  document.querySelectorAll("[data-out]").forEach(b=>b.onclick=()=>{
   const gone=S.players.splice(+b.dataset.out,1)[0];
-  if(S.wait.length){const n=S.wait.shift();S.players.push({name:n,paid:false});toast(gone.name+" εν έρκεται. Μπήκε ο "+n+" από την αναμονή")}
+  if(S.wait.length){const n=S.wait.shift();S.players.push({name:n,paid:false});toast(gone.name+" εν έρκεται. Μπήκε ο/η "+n+" από την αναμονή")}
   else toast(gone.name+" εν έρκεται");
   save();match();});
  const pb=document.getElementById("paybtn");
- if(pb)pb.onclick=()=>{meP.paid=true;toast("Πλήρωσες "+fmt(per())+" ✓");
-  if(locked())toast("🔒 Όλοι πλήρωσαν. Κλείδωσε το γήπεδο!");save();match();};
+ if(pb)pb.onclick=()=>{meP.paid=true;toast("Πλήρωσες "+fmt(per())+" ✓");if(locked())toast("🔒 Όλοι πλήρωσαν. Κλείδωσε το γήπεδο!");save();match();};
 }
-S?match():create();
+P?home():setup();
 </script>
 </body>
 </html>
