@@ -125,7 +125,7 @@ function onboarding(step=1,ob={name:"",level:"",sports:[]}){
  const back=step>1?`<a class="back" id="bk">← πίσω</a>`:`<div class="logo">⚽ foorBOSS</div>`;
  let body="",ttl="";
  if(step===1){ttl="Πώς σε λένε;";body=`<input id="nm" value="${ob.name}" placeholder="Το όνομα σου" autocomplete="off"><button class="btn" id="nx">Συνέχεια</button>`}
- if(step===2){ttl="Πόσο ξέρεις μαππα;";body=`<div class="opts">${LEVELS.map(l=>`<button class="opt ${ob.level===l.v?"on":""}" data-v="${l.v}"><b>${l.t}</b><small>${l.d}</small></button>`).join("")}</div><button class="btn" id="nx">Συνέχεια</button>`}
+ if(step===2){ttl="Ποση μαππα ξερεις;";body=`<div class="opts">${LEVELS.map(l=>`<button class="opt ${ob.level===l.v?"on":""}" data-v="${l.v}"><b>${l.t}</b><small>${l.d}</small></button>`).join("")}</div><button class="btn" id="nx">Συνέχεια</button>`}
  if(step===3){ttl="Τι σε ενδιαφέρει να παίξεις;";body=`<p class="sub">Διάλεξε ό,τι θες. Το κάθε άθλημα έχει δικά του γήπεδα και ματς.</p><div class="opts">${SPORTS.map(l=>`<button class="opt ${ob.sports.includes(l.v)?"on":""}" data-s="${l.v}"><b>${l.e} ${l.t}</b><small>${l.d}</small></button>`).join("")}</div><button class="btn" id="nx">Ξεκίνα</button>`}
  $(`<header>${back}${bar(step)}<h1>${ttl}</h1></header><main>${body}</main>`);
  if(step>1)bk.onclick=()=>onboarding(step-1,ob);
