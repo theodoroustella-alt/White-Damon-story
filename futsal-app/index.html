@@ -112,44 +112,52 @@ const locked=()=>paidN()===S.cap;
 const tags=m=>`<div class="tags">${m.sport?`<span class="tg">${SP[m.sport].e} ${SP[m.sport].n}</span>`:""}<span class="tg ${m.mode==="level"?"l":""}">${m.mode==="level"?"🎯 Επίπεδο τακτικών":"😄 Για πλάκα"}</span>${m.womenOnly?'<span class="tg f">♀ Μόνο γυναίκες</span>':""}${m.open?'<span class="tg">🔓 Ανοιχτό ματς</span>':""}</div>`;
 const modeTxt=m=>m==="level"?"Μόνο στο επίπεδο μου":"Για πλάκα";
 
-/* ---- onboarding (3 οθόνες) ---- */
-const LEVELS=[
+/* ---- onboarding: άθλημα, όνομα, επίπεδο ανά άθλημα ---- */
+const WORD={futsal:{q:"Ποση μαππα ξερεις;",pro:"Είμαι καθηγητής του φουρπού"},basket:{q:"Ποσο μπασκευ ξερεις;",pro:"Είμαι καθηγητής του μπασκευ"}};
+const lvlList=sp=>[
  {v:"never",t:"Εν έπαιξα ποττέ",d:"Θέλω απλά να δοκιμάσω"},
  {v:"fun",t:"Παίζω λλίο",d:"Ξέρω τα βασικά, εν με νοιάζει το επίπεδο"},
- {v:"pro",t:"Είμαι καθηγητής του φουρπού",d:"Παίζω τακτικά, θέλω ματς στο επίπεδο μου"}];
+ {v:"pro",t:WORD[sp].pro,d:"Παίζω τακτικά, θέλω ματς στο επίπεδο μου"}];
+const lvlText=(sp,v)=>(lvlList(sp).find(l=>l.v===v)||{t:""}).t;
+const pm=()=>P.modes?(P.modes[cur()]||"fun"):"fun";
 const SPORTS=[
  {v:"futsal",t:"Φούτσαλ",e:"⚽",d:"Ξεκινάμε από εδώ"},
  {v:"basket",t:"Μπάσκετ",e:"🏀",d:"Δεύτερο, ξεχωριστό από το φούτσαλ"}];
-function onboarding(step=1,ob={name:"",level:"",sports:[]}){
- const bar=n=>`<div class="steps">${[1,2,3].map(i=>`<i class="${i<=n?"on":""}"></i>`).join("")}</div>`;
- const back=step>1?`<a class="back" id="bk">← πίσω</a>`:`<div class="logo">⚽ foorBOSS</div>`;
+function onboarding(i=0,ob={name:"",sports:[],levels:{}}){
+ const steps=["sports","name",...ob.sports.map(s=>"lvl:"+s)];
+ const total=2+Math.max(1,ob.sports.length);
+ const k=steps[i]||"sports";
+ const bar=`<div class="steps">${Array.from({length:total},(_,j)=>`<i class="${j<=i?"on":""}"></i>`).join("")}</div>`;
+ const back=i>0?`<a class="back" id="bk">← πίσω</a>`:`<div class="logo">foorBOSS</div>`;
  let body="",ttl="";
- if(step===1){ttl="Πώς σε λένε;";body=`<input id="nm" value="${ob.name}" placeholder="Το όνομα σου" autocomplete="off"><button class="btn" id="nx">Συνέχεια</button>`}
- if(step===2){ttl="Ποση μαππα ξερεις;";body=`<div class="opts">${LEVELS.map(l=>`<button class="opt ${ob.level===l.v?"on":""}" data-v="${l.v}"><b>${l.t}</b><small>${l.d}</small></button>`).join("")}</div><button class="btn" id="nx">Συνέχεια</button>`}
- if(step===3){ttl="Τι σε ενδιαφέρει να παίξεις;";body=`<p class="sub">Διάλεξε ό,τι θες. Το κάθε άθλημα έχει δικά του γήπεδα και ματς.</p><div class="opts">${SPORTS.map(l=>`<button class="opt ${ob.sports.includes(l.v)?"on":""}" data-s="${l.v}"><b>${l.e} ${l.t}</b><small>${l.d}</small></button>`).join("")}</div><button class="btn" id="nx">Ξεκίνα</button>`}
- $(`<header>${back}${bar(step)}<h1>${ttl}</h1></header><main>${body}</main>`);
- if(step>1)bk.onclick=()=>onboarding(step-1,ob);
- if(step===1)nm.oninput=()=>ob.name=nm.value;
- document.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{ob.level=b.dataset.v;onboarding(step,ob)});
- document.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{const v=b.dataset.s;ob.sports=ob.sports.includes(v)?ob.sports.filter(x=>x!==v):[...ob.sports,v];onboarding(step,ob)});
+ if(k==="sports"){ttl="Τι σε ενδιαφέρει να παίξεις;";body=`<p class="sub">Διάλεξε ό,τι θες. Το κάθε άθλημα έχει δικά του γήπεδα και ματς.</p><div class="opts">${SPORTS.map(l=>`<button class="opt ${ob.sports.includes(l.v)?"on":""}" data-s="${l.v}"><b>${l.e} ${l.t}</b><small>${l.d}</small></button>`).join("")}</div><button class="btn" id="nx">Συνέχεια</button>`}
+ if(k==="name"){ttl="Πώς σε λένε;";body=`<input id="nm" value="${ob.name}" placeholder="Το όνομα σου" autocomplete="off"><button class="btn" id="nx">Συνέχεια</button>`}
+ if(k.startsWith("lvl:")){const sp=k.slice(4);const last=i===steps.length-1;ttl=`${SP[sp].e} ${WORD[sp].q}`;body=`<div class="opts">${lvlList(sp).map(l=>`<button class="opt ${ob.levels[sp]===l.v?"on":""}" data-v="${l.v}"><b>${l.t}</b><small>${l.d}</small></button>`).join("")}</div><button class="btn" id="nx">${last?"Ξεκίνα":"Συνέχεια"}</button>`}
+ $(`<header>${back}${bar}<h1>${ttl}</h1></header><main>${body}</main>`);
+ if(i>0)bk.onclick=()=>onboarding(i-1,ob);
+ if(k==="name")nm.oninput=()=>ob.name=nm.value;
+ document.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{ob.levels[k.slice(4)]=b.dataset.v;onboarding(i,ob)});
+ document.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{const v=b.dataset.s;ob.sports=ob.sports.includes(v)?ob.sports.filter(x=>x!==v):[...ob.sports,v];onboarding(i,ob)});
  nx.onclick=()=>{
-  if(step===1){if(!ob.name.trim())return toast("Γράψε το όνομα σου");ob.name=ob.name.trim();return onboarding(2,ob)}
-  if(step===2){if(!ob.level)return toast("Διάλεξε μια επιλογή");return onboarding(3,ob)}
-  if(!ob.sports.length)return toast("Διάλεξε τουλάχιστον ένα");
-  P={name:ob.name,level:ob.level,sports:ob.sports,gender:"N",onlyWomen:false,mode:ob.level==="pro"?"level":"fun"};saveP();home();
+  if(k==="sports"){if(!ob.sports.length)return toast("Διάλεξε τουλάχιστον ένα");return onboarding(1,ob)}
+  if(k==="name"){if(!ob.name.trim())return toast("Γράψε το όνομα σου");ob.name=ob.name.trim();return onboarding(2,ob)}
+  const sp=k.slice(4);if(!ob.levels[sp])return toast("Διάλεξε μια επιλογή");
+  if(i<steps.length-1)return onboarding(i+1,ob);
+  const modes={};ob.sports.forEach(x=>modes[x]=ob.levels[x]==="pro"?"level":"fun");
+  P={name:ob.name,sports:ob.sports,levels:ob.levels,modes,sport:ob.sports[0],gender:"N",onlyWomen:false};saveP();home();
  };
 }
 
 /* ---- επιλογές (φύλο, τρόπος παιχνιδιού) ---- */
 function prefs(){
- const d={name:P.name,gender:P.gender,mode:P.mode,onlyWomen:P.onlyWomen};
+ const d={name:P.name,gender:P.gender,mode:pm(),onlyWomen:P.onlyWomen};
  const draw=()=>{
   $(`<header><a class="back" id="bk">← αρχική</a><h1>Οι επιλογές σου</h1><p>Τα αλλάζεις όποτε θέλεις.</p></header>
   <main>
   <label>Το όνομα σου</label><input id="nm" value="${d.name}">
   <label>Είμαι</label>
   <div class="seg" id="gd"><button data-v="F" class="${d.gender==="F"?"on":""}">Γυναίκα</button><button data-v="M" class="${d.gender==="M"?"on":""}">Άντρας</button><button data-v="N" class="${d.gender==="N"?"on":""}">Προτιμώ να μεν πω</button></div>
-  <label>Πώς θέλεις να παίζεις</label>
+  <label>Πώς θέλεις να παίζεις ${SP[cur()].art}</label>
   <div class="seg" id="md">
    <button data-v="fun" class="${d.mode==="fun"?"on":""}">😄 Για πλάκα<small>Εν με νοιάζει το επίπεδο</small></button>
    <button data-v="level" class="${d.mode==="level"?"on":""}">🎯 Στο επίπεδο μου<small>Θέλω παίχτες σαν εμένα</small></button></div>
@@ -159,7 +167,7 @@ function prefs(){
   document.querySelectorAll("#gd button").forEach(b=>b.onclick=()=>{d.gender=b.dataset.v;if(d.gender!=="F")d.onlyWomen=false;draw()});
   document.querySelectorAll("#md button").forEach(b=>b.onclick=()=>{d.mode=b.dataset.v;draw()});
   const ow=document.getElementById("ow");if(ow)ow.onclick=()=>{d.onlyWomen=!d.onlyWomen;draw()};
-  ok.onclick=()=>{if(!d.name.trim())return toast("Γράψε το όνομα σου");P={...P,...d,name:d.name.trim()};saveP();home()};
+  ok.onclick=()=>{if(!d.name.trim())return toast("Γράψε το όνομα σου");P={...P,name:d.name.trim(),gender:d.gender,onlyWomen:d.onlyWomen,modes:{...P.modes,[cur()]:d.mode}};saveP();home()};
  };draw();
 }
 
@@ -194,11 +202,11 @@ function mapScreen(){
 
 /* ---- αρχική ---- */
 function home(){
- if(!P||!P.sports)return onboarding();
+ if(!P||!P.sports||!P.levels)return onboarding();
  $(`<header><div class="logo">${SP[cur()].e} foorBOSS</div><h1>Πάμε ${SP[cur()].art};</h1><p>Κλείσε ματς ή μπες σε ματς που έχει ήδη θέση.</p></header>
  <main>
  ${sportBar()}
- <div class="chip"><div><b>${P.name}</b> <small style="color:var(--mut)">${(LEVELS.find(l=>l.v===P.level)||{t:""}).t}</small><div class="tags">${tags({mode:P.mode,womenOnly:P.onlyWomen})}</div></div><a id="ed">αλλαγή</a></div>
+ <div class="chip"><div><b>${P.name}</b> <small style="color:var(--mut)">${lvlText(cur(),P.levels[cur()])}</small><div class="tags">${tags({mode:pm(),womenOnly:P.onlyWomen})}</div></div><a id="ed">αλλαγή</a></div>
  ${S?`<div class="card"><b>Το ματς σου ${SP[S.sport||"futsal"].e}</b><div class="meta"><span>${S.venue.name}</span><span>${S.dayText||S.time}</span></div><button class="btn dark" id="cur" style="margin-top:12px;padding:12px;font-size:15px">Άνοιξε το</button></div>`:""}
  <button class="btn" id="mk">Φτιάξε ματς ${SP[cur()].art}</button>
  <button class="btn dark" id="fd">Βρες ανοιχτό ματς</button>
@@ -212,7 +220,7 @@ function home(){
 function create(pre){
  let open=false;const sp=cur(),SV=VENUES.filter(v=>v.sport===sp);
  const draw=()=>{
- $(`<header><a class="back" id="back">← αρχική</a><h1>Φτιάξε ματς ${SP[sp].art}</h1>${tags({sport:sp,mode:P.mode,womenOnly:P.onlyWomen,open})}</header>
+ $(`<header><a class="back" id="back">← αρχική</a><h1>Φτιάξε ματς ${SP[sp].art}</h1>${tags({sport:sp,mode:pm(),womenOnly:P.onlyWomen,open})}</header>
  <main>
  <label>Γήπεδο</label><select id="venue">${SV.map(v=>`<option value="${v.id}">${v.name} – ${v.area} (${fmt(v.price)}/ώρα)</option>`).join("")}</select>
  <div class="row"><div><label>Μέρα</label><input id="day" type="date"></div><div><label>Ώρα</label><input id="time" type="time" value="21:00"></div></div>
@@ -221,7 +229,7 @@ function create(pre){
  <div class="sw ${open?"on":""}" id="op"><i></i><span>Άνοιξε το ματς σε άλλες παρέες<small>Άλλοι με τις ίδιες επιλογές μπορούν να ζητήσουν θέση</small></span></div>
  <div class="price"><span>Μερίδιο ανά παίχτη</span><b id="pp"></b></div>
  <button class="btn" id="go">Φτιάξε το ${SP[sp].art}</button>
- <p class="hint">Το ματς παίρνει αυτόματα τις επιλογές σου (${modeTxt(P.mode)}${P.onlyWomen?", μόνο γυναίκες":""}).</p></main>`);
+ <p class="hint">Το ματς παίρνει αυτόματα τις επιλογές σου (${modeTxt(pm())}${P.onlyWomen?", μόνο γυναίκες":""}).</p></main>`);
  const d=new Date();d.setDate(d.getDate()+2);day.value=d.toISOString().slice(0,10);
  const upd=()=>pp.textContent=fmt(VENUES.find(x=>x.id==venue.value).price/+cap.value);
  venue.onchange=cap.onchange=upd;if(pre)venue.value=pre;upd();
@@ -229,7 +237,7 @@ function create(pre){
  go.onclick=()=>{
   S={me:P.name,sport:sp,venue:VENUES.find(x=>x.id==venue.value),day:day.value,time:time.value,cap:+cap.value,
      players:[{name:P.name,paid:false}],wait:[],id:Math.random().toString(36).slice(2,7),
-     open,mode:P.mode,womenOnly:P.onlyWomen};
+     open,mode:pm(),womenOnly:P.onlyWomen};
   save();match();};
  };draw();
 }
@@ -246,13 +254,13 @@ const OPEN=[
 function why(m){
  if(m.womenOnly&&P.gender!=="F")return "Μόνο για γυναίκες";
  if(P.onlyWomen&&!m.womenOnly)return "Εσύ επέλεξες να παίζεις μόνο με γυναίκες";
- if(m.mode!==P.mode)return m.mode==="level"?"Για τακτικούς παίχτες, εσύ θέλεις «για πλάκα»":"Είναι «για πλάκα», εσύ θέλεις μόνο το επίπεδο σου";
+ if(m.mode!==pm())return m.mode==="level"?"Για τακτικούς παίχτες, εσύ θέλεις «για πλάκα»":"Είναι «για πλάκα», εσύ θέλεις μόνο το επίπεδο σου";
  return "";
 }
 function openList(){
  const sp=cur();const L=OPEN.filter(m=>m.sport===sp).map(m=>({m,r:why(m)})).sort((a,b)=>(a.r?1:0)-(b.r?1:0));
  const okN=L.filter(x=>!x.r).length;
- $(`<header><a class="back" id="back">← αρχική</a><h1>Ανοιχτά ματς ${SP[sp].art}</h1><p>${okN} ταιριάζουν με τις επιλογές σου</p>${tags({mode:P.mode,womenOnly:P.onlyWomen})}</header>
+ $(`<header><a class="back" id="back">← αρχική</a><h1>Ανοιχτά ματς ${SP[sp].art}</h1><p>${okN} ταιριάζουν με τις επιλογές σου</p>${tags({mode:pm(),womenOnly:P.onlyWomen})}</header>
  <main>${L.map(({m,r},i)=>{const v=VENUES[m.venue];const free=m.cap-m.players.length;
   return `<div class="card om ${r?"dis":""}"><h3>${m.host} · ${m.dayText}</h3>
    <div class="meta"><span>${v.name}, ${v.area}</span><span>${fmt(v.price/m.cap)} ο καθένας</span></div>
