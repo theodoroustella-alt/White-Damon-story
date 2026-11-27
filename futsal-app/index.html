@@ -72,6 +72,9 @@ a.back{color:var(--lime);font-size:13px;font-weight:700;text-decoration:none;cur
 .opt small{display:block;margin-top:4px;color:var(--mut);font-size:13px;font-weight:500}.opt.on{border-color:var(--g2);background:#e9f6df}
 .sub{color:var(--mut);margin-bottom:10px;font-size:14px}
 .map{width:100%;border-radius:14px;border:2px solid var(--line);display:block}
+.pvb{background:#fff7d6;color:#6b4800;font-size:12px;font-weight:800;padding:8px 20px;display:flex;justify-content:space-between}.pvb a{cursor:pointer;text-decoration:underline}
+.avs{display:flex;margin:10px 0 4px}.avs .av{width:32px;height:32px;margin-right:-8px;border:2px solid #fff;font-size:13px}
+.ok{background:#e9f6df;border:2px solid var(--g2);border-radius:14px;padding:14px;margin-bottom:14px;font-weight:700}
 </style>
 </head>
 <body>
@@ -277,13 +280,79 @@ function openList(){
   save();toast("Μπήκες στο ματς των «"+m.host+"»");match();});
 }
 
+/* ---- ο καλεσμένος: τι βλέπει όποιος πάρει το link ---- */
+const dtOf=m=>m.dayText||new Date(m.day+"T"+m.time).toLocaleDateString("el-GR",{weekday:"long",day:"numeric",month:"long"})+" · "+m.time;
+function invite(st="land",v){
+ v=v||{name:"",gender:"N",level:"",pay:"card",blocked:"",full:false};
+ const m=S,sp=m.sport||"futsal",host=m.me,free=m.cap-m.players.length,pp=m.venue.price/m.cap;
+ const bn=`<div class="pvb"><span>👀 Έτσι το βλέπει ο καλεσμένος</span><a id="pvx">έξοδος</a></div>`;
+ const wrap=(h,b)=>{$(`${bn}<header><div class="logo">${SP[sp].e} foorBOSS</div><h1>${h}</h1></header><main>${b}</main>`);pvx.onclick=match};
+ const card=`<div class="card"><b>${m.venue.name}, ${m.venue.area}</b><div class="meta"><span>${dtOf(m)}</span><span>${fmt(pp)} ο καθένας</span></div>${tags(m)}
+  <div class="avs">${m.players.slice(0,7).map(p=>`<div class="av">${ini(p.name)}</div>`).join("")}</div>
+  <p class="meta" style="margin-top:14px"><span>${m.players.length}/${m.cap} παίχτες · ${free>0?free+" ελεύθερες θέσεις":"γεμάτο"}</span></p></div>`;
+ if(st==="land"){
+  wrap(`${host} σε καλεί για ${SP[sp].art}`,`${card}
+   <p class="sub">Εν χρειάζεσαι εφαρμογή ή λογαριασμό. Γράφεις το όνομα σου και μπαίνεις.</p>
+   <button class="btn" id="nx">${free>0?"Μπαίνω":"Γεμάτο: μπες σε αναμονή"}</button>
+   <button class="btn ghost" id="no">Εν μπορώ</button>`);
+  nx.onclick=()=>{v.full=free<=0;invite("who",v)};no.onclick=()=>{toast("Εντάξει, ενημερώνεται ο "+host);match()};
+ }
+ if(st==="who"){
+  wrap("Ποιος/α είσαι;",`<label>Το όνομα σου</label><input id="nm" value="${v.name}" placeholder="π.χ. Μαρία" autocomplete="off">
+   ${m.womenOnly?`<label>Είμαι</label><div class="seg" id="gd"><button data-g="F" class="${v.gender==="F"?"on":""}">Γυναίκα</button><button data-g="M" class="${v.gender==="M"?"on":""}">Άντρας</button><button data-g="N" class="${v.gender==="N"?"on":""}">Προτιμώ να μεν πω</button></div><p class="sub" style="margin-top:8px">Το ματς είναι μόνο για γυναίκες.</p>`:""}
+   <label>${WORD[sp].q}</label><div class="opts">${lvlList(sp).map(l=>`<button class="opt ${v.level===l.v?"on":""}" data-l="${l.v}"><b>${l.t}</b></button>`).join("")}</div>
+   <button class="btn" id="nx">Συνέχεια</button>`);
+  nm.oninput=()=>v.name=nm.value;
+  document.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{v.gender=b.dataset.g;invite("who",v)});
+  document.querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>{v.level=b.dataset.l;invite("who",v)});
+  nx.onclick=()=>{
+   if(!v.name.trim())return toast("Γράψε το όνομα σου");if(!v.level)return toast("Διάλεξε μια επιλογή");
+   v.name=v.name.trim();
+   if(m.womenOnly&&v.gender!=="F"){v.blocked="Το ματς είναι μόνο για γυναίκες.";return invite("blocked",v)}
+   if(m.mode==="level"&&v.level!=="pro"){v.blocked="Η παρέα ψάχνει παίχτες στο επίπεδο τους. Το ματς είναι για τακτικούς.";return invite("blocked",v)}
+   invite("pay",v)};
+ }
+ if(st==="blocked"){
+  wrap("Δυστυχώς εν ταιριάζει",`<div class="card"><p style="font-weight:700">${v.blocked}</p></div>
+   <p class="sub">Μπορείς να δεις άλλα ματς που ταιριάζουν με σένα.</p>
+   <button class="btn" id="nx">Δες άλλα ανοιχτά ματς</button><button class="btn ghost" id="bk">Πίσω</button>`);
+  nx.onclick=()=>toast("Εδώ θα άνοιγε η λίστα ανοιχτών ματς");bk.onclick=()=>invite("who",v);
+ }
+ if(st==="pay"){
+  const soft=m.mode==="fun"&&v.level==="pro"?`<div class="ok" style="background:#fff7d6;border-color:#e8c85a">Το ματς είναι «για πλάκα». Εσύ ξέρεις καλά, αλλά ο ${host} σε κάλεσε, οπότε μπαίνεις.</div>`:"";
+  wrap(v.full?"Μπαίνεις στην αναμονή":"Το μερίδιο σου",`${soft}<div class="price"><span>${v.full?"Θα πληρώσεις μόνο αν ελευθερωθεί θέση":"Μερίδιο ανά παίχτη"}</span><b>${fmt(pp)}</b></div>
+   ${v.full?"":`<label>Πώς θέλεις να πληρώσεις</label><div class="seg" id="py"><button data-p="card" class="${v.pay==="card"?"on":""}">💳 Κάρτα τώρα<small>Κρατάμε τη θέση σου</small></button><button data-p="cash" class="${v.pay==="cash"?"on":""}">💶 Μετρητά στο γήπεδο<small>Πληρώνεις όταν φτάσεις</small></button></div>`}
+   <button class="btn" id="nx">${v.full?"Μπες στην αναμονή":(v.pay==="card"?"Πλήρωσε "+fmt(pp):"Κλείσε τη θέση")}</button>
+   <button class="btn ghost" id="bk">Πίσω</button>`);
+  document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{v.pay=b.dataset.p;invite("pay",v)});bk.onclick=()=>invite("who",v);
+  nx.onclick=()=>{
+   if(v.full)S.wait.push(v.name);else S.players.push({name:v.name,paid:v.pay==="card",cash:v.pay==="cash"});
+   save();invite("done",v)};
+ }
+ if(st==="done"){
+  const pn=paidN();
+  wrap(v.full?"Είσαι στην αναμονή":"Είσαι μέσα! 🎉",`<div class="ok">${v.full?"Θα σε ειδοποιήσουμε αν ελευθερωθεί θέση.":`Η θέση σου είναι κλεισμένη. ${v.pay==="cash"?"Θα πληρώσεις "+fmt(pp)+" στο γήπεδο.":"Πλήρωσες "+fmt(pp)+"."}`}</div>
+   ${card}
+   <div class="meta"><span>${pn} από ${m.cap} πλήρωσαν</span><span>${m.players.length}/${m.cap} παίχτες</span></div>
+   <button class="btn" id="cal">📅 Πρόσθεσε στο ημερολόγιο</button>
+   <button class="btn dark" id="sh">Κάλεσε και άλλους</button>
+   <button class="btn ghost" id="cn">Εν μπορώ πια</button>
+   <p class="hint">Θα πάρεις υπενθύμιση πριν το ματς. Ακυρώνεις από εδώ και μπαίνει ο επόμενος από την αναμονή.</p>`);
+  cal.onclick=()=>toast("Προστέθηκε στο ημερολόγιο (δείγμα)");sh.onclick=()=>{try{navigator.clipboard.writeText("foorboss.cy/m/"+m.id).then(()=>toast("Αντιγράφτηκε το link"),()=>toast("Δεν αντιγράφτηκε"))}catch(e){toast("Δεν αντιγράφτηκε")}};
+  cn.onclick=()=>{
+   S.wait=S.wait.filter(n=>n!==v.name);const i=S.players.findIndex(p=>p.name===v.name);
+   if(i>=0){S.players.splice(i,1);if(S.wait.length)S.players.push({name:S.wait.shift(),paid:false})}
+   save();toast("Ακυρώθηκε. Ειδοποιείται ο "+host);match()};
+ }
+}
+
 /* ---- σελίδα ματς ---- */
 function match(){
  const pn=paidN(),L=locked();
  const meP=S.players.find(p=>p.name===S.me);
  const dt=S.dayText||new Date(S.day+"T"+S.time).toLocaleDateString("el-GR",{weekday:"long",day:"numeric",month:"long"})+" · "+S.time;
  let rows=S.players.map((p,i)=>`<div class="pl"><div class="av">${ini(p.name)}</div><div class="n">${p.name}${p.name===S.me?" (εσύ)":""}</div>
-   <span class="tag ${p.paid?"t-paid":"t-pend"}">${p.paid?"Πλήρωσε ✓":"Εκκρεμεί"}</span>
+   <span class="tag ${p.paid?"t-paid":"t-pend"}">${p.paid?"Πλήρωσε ✓":(p.cash?"Μετρητά στο γήπεδο":"Εκκρεμεί")}</span>
    ${!p.paid&&p.name!==S.me?`<button class="mini go" data-pay="${i}">πλήρωσε</button>`:""}
    ${p.name!==S.me?`<button class="mini" data-out="${i}">✕</button>`:""}</div>`).join("");
  for(let i=S.players.length;i<S.cap;i++)rows+=`<div class="pl empty"><div class="av">+</div><div class="n">Έσιει θέση</div></div>`;
@@ -299,10 +368,11 @@ function match(){
  <h2>Παίχτες (${S.players.length}/${S.cap})</h2><div class="card" style="padding:4px 14px">${rows}</div>
  ${S.wait.length?`<h2>Λίστα αναμονής</h2><div class="card" style="padding:4px 14px">${wait}</div>`:""}
  <button class="btn ghost" id="sim" style="margin-top:6px">+ Προσομοίωση: μπαίνει νέος παίχτης</button>
+ <button class="btn dark" id="pv" style="margin-top:10px">👀 Δες τι βλέπει όποιος πάρει το link</button>
  <p class="hint">Πρωτότυπο: οι πληρωμές είναι ψεύτικες. Οι νέοι παίχτες της προσομοίωσης σέβονται τους κανόνες του ματς${S.womenOnly?" (εδώ μπαίνουν μόνο γυναίκες)":""}.</p>
  </main>
  ${meP&&!meP.paid?`<div class="sticky"><button class="btn dark" id="paybtn">Πλήρωσε το μερίδιο σου · ${fmt(per())}</button></div>`:""}`);
- back.onclick=home;
+ back.onclick=home;pv.onclick=()=>invite();
  share.onclick=()=>{const t=`${SP[S.sport||"futsal"].n} ${dt} στο ${S.venue.name}! ${fmt(per())} ο καθένας: foorboss.cy/m/${S.id}`;
   navigator.clipboard?navigator.clipboard.writeText(t).then(()=>toast("Αντιγράφτηκε το link"),()=>toast("Δεν αντιγράφτηκε")):toast("Δεν αντιγράφτηκε")};
  sim.onclick=()=>{
