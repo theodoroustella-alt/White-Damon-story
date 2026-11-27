@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FOOrpos – φούτσαλ με την παρέα</title>
+<title>foorBOSS – φούτσαλ με την παρέα</title>
 <style>
 :root{--g:#1f6b2a;--g2:#3f9d3a;--lime:#c8f25a;--ink:#0d1b16;--card:#f4f8ec;--mut:#6b7a73;--red:#e5484d;--line:#d5e2c6}
 *{box-sizing:border-box;margin:0}
@@ -100,8 +100,8 @@ const FAKE=["Περτιτζιής Μιτσοστόμος","Περτίκα μου
 const FAKE_F=["Περτίκα μουυυ","Ελένη","Μαρίνα","Χριστίνα","Ανδρούλα","Σοφία","Κλαίρη","Μαρία","Έλλη","Νάσια"];
 const load=k=>{try{return JSON.parse(localStorage.getItem(k)||"null")}catch(e){return null}};
 const store=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
-let P=load("foorpos_me"),S=load("foorpos");
-const save=()=>store("foorpos",S),saveP=()=>store("foorpos_me",P);
+let P=load("foorboss_me"),S=load("foorboss");
+const save=()=>store("foorboss",S),saveP=()=>store("foorboss_me",P);
 const $=h=>{document.getElementById("app").innerHTML=h};
 const toast=m=>{const t=document.getElementById("toast");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2400)};
 const ini=n=>n.trim()[0].toUpperCase();
@@ -122,7 +122,7 @@ const SPORTS=[
  {v:"basket",t:"Μπάσκετ",e:"🏀",d:"Δεύτερο, ξεχωριστό από το φούτσαλ"}];
 function onboarding(step=1,ob={name:"",level:"",sports:[]}){
  const bar=n=>`<div class="steps">${[1,2,3].map(i=>`<i class="${i<=n?"on":""}"></i>`).join("")}</div>`;
- const back=step>1?`<a class="back" id="bk">← πίσω</a>`:`<div class="logo">⚽ FOOrpos</div>`;
+ const back=step>1?`<a class="back" id="bk">← πίσω</a>`:`<div class="logo">⚽ foorBOSS</div>`;
  let body="",ttl="";
  if(step===1){ttl="Πώς σε λένε;";body=`<input id="nm" value="${ob.name}" placeholder="Το όνομα σου" autocomplete="off"><button class="btn" id="nx">Συνέχεια</button>`}
  if(step===2){ttl="Πόσο ξέρεις μπάλα;";body=`<div class="opts">${LEVELS.map(l=>`<button class="opt ${ob.level===l.v?"on":""}" data-v="${l.v}"><b>${l.t}</b><small>${l.d}</small></button>`).join("")}</div><button class="btn" id="nx">Συνέχεια</button>`}
@@ -195,7 +195,7 @@ function mapScreen(){
 /* ---- αρχική ---- */
 function home(){
  if(!P||!P.sports)return onboarding();
- $(`<header><div class="logo">${SP[cur()].e} FOOrpos</div><h1>Πάμε ${SP[cur()].art};</h1><p>Κλείσε ματς ή μπες σε ματς που έχει ήδη θέση.</p></header>
+ $(`<header><div class="logo">${SP[cur()].e} foorBOSS</div><h1>Πάμε ${SP[cur()].art};</h1><p>Κλείσε ματς ή μπες σε ματς που έχει ήδη θέση.</p></header>
  <main>
  ${sportBar()}
  <div class="chip"><div><b>${P.name}</b> <small style="color:var(--mut)">${(LEVELS.find(l=>l.v===P.level)||{t:""}).t}</small><div class="tags">${tags({mode:P.mode,womenOnly:P.onlyWomen})}</div></div><a id="ed">αλλαγή</a></div>
@@ -287,7 +287,7 @@ function match(){
   <div class="meta"><span>${pn} από ${S.cap} πλήρωσαν</span><span>${fmt(per())} ο καθένας</span></div>
   <p class="meta" style="margin-top:10px">${L?"Όλα έτοιμα. Τα λέμε στο γήπεδο!":"Κλειδώνει σαν πληρώσουν όλοι οι "+S.cap+"."}</p></div>
  <label>Link πρόσκλησης</label>
- <div class="link"><span style="flex:1">foorpos.cy/m/${S.id}</span><button class="mini go" id="share">Στείλε</button></div>
+ <div class="link"><span style="flex:1">foorboss.cy/m/${S.id}</span><button class="mini go" id="share">Στείλε</button></div>
  <h2>Παίχτες (${S.players.length}/${S.cap})</h2><div class="card" style="padding:4px 14px">${rows}</div>
  ${S.wait.length?`<h2>Λίστα αναμονής</h2><div class="card" style="padding:4px 14px">${wait}</div>`:""}
  <button class="btn ghost" id="sim" style="margin-top:6px">+ Προσομοίωση: μπαίνει νέος παίχτης</button>
@@ -295,7 +295,7 @@ function match(){
  </main>
  ${meP&&!meP.paid?`<div class="sticky"><button class="btn dark" id="paybtn">Πλήρωσε το μερίδιο σου · ${fmt(per())}</button></div>`:""}`);
  back.onclick=home;
- share.onclick=()=>{const t=`${SP[S.sport||"futsal"].n} ${dt} στο ${S.venue.name}! ${fmt(per())} ο καθένας: foorpos.cy/m/${S.id}`;
+ share.onclick=()=>{const t=`${SP[S.sport||"futsal"].n} ${dt} στο ${S.venue.name}! ${fmt(per())} ο καθένας: foorboss.cy/m/${S.id}`;
   navigator.clipboard?navigator.clipboard.writeText(t).then(()=>toast("Αντιγράφτηκε το link"),()=>toast("Δεν αντιγράφτηκε")):toast("Δεν αντιγράφτηκε")};
  sim.onclick=()=>{
   const pool=S.womenOnly?FAKE_F:FAKE;const taken=[...S.players.map(p=>p.name),...S.wait];
