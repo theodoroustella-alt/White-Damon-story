@@ -94,13 +94,8 @@ const VENUES=[
  {id:2,sport:"futsal",name:"Γήπεδο φούτσαλ Β",area:"Λευκωσία",price:55,lat:35.19,lon:33.40,sample:true,hours:{0:H("10:00","22:00"),1:null,2:H("17:00","23:00"),3:H("17:00","23:00"),4:H("17:00","23:00"),5:H("17:00","23:30"),6:H("10:00","23:30")}},
  {id:3,sport:"futsal",name:"Γήπεδο φούτσαλ Γ",area:"Παραλίμνι",price:50,lat:35.04,lon:33.98,sample:true,hours:{0:H("10:00","22:00"),1:H("15:00","23:00"),2:H("15:00","23:00"),3:H("15:00","23:00"),4:H("15:00","23:00"),5:null,6:H("10:00","23:00")}},
  {id:4,sport:"futsal",name:"Γήπεδο φούτσαλ Δ",area:"Λεμεσός",price:58,lat:34.69,lon:33.05,sample:true,hours:{0:H("14:00","23:30"),1:H("14:00","23:30"),2:H("14:00","23:30"),3:H("14:00","23:30"),4:H("14:00","23:30"),5:H("14:00","23:30"),6:H("06:00","23:30")}}];
-VENUES.push(
- {id:5,sport:"basket",name:"Γήπεδο μπάσκετ Α",area:"Λευκωσία",price:40,lat:35.17,lon:33.36,sample:true,hours:{0:null,1:H("09:00","22:00"),2:H("09:00","22:00"),3:H("09:00","22:00"),4:H("09:00","22:00"),5:H("09:00","22:00"),6:H("09:00","20:00")}},
- {id:6,sport:"basket",name:"Γήπεδο μπάσκετ Β",area:"Λεμεσός",price:45,lat:34.70,lon:33.02,sample:true,hours:{0:H("10:00","20:00"),1:H("14:00","23:00"),2:H("14:00","23:00"),3:null,4:H("14:00","23:00"),5:H("14:00","23:00"),6:H("10:00","22:00")}},
- {id:7,sport:"basket",name:"Γήπεδο μπάσκετ Γ",area:"Λάρνακα",price:38,lat:34.92,lon:33.62,sample:true,hours:{0:H("10:00","20:00"),1:H("16:00","22:00"),2:H("16:00","22:00"),3:H("16:00","22:00"),4:H("16:00","22:00"),5:null,6:H("10:00","20:00")}});
 const SP={
- futsal:{n:"Φούτσαλ",e:"⚽",art:"φούτσαλ",formats:[[10,"5 εναντίον 5 (10 παίχτες)"],[12,"6 εναντίον 6 (12 παίχτες)"],[8,"4 εναντίον 4 (8 παίχτες)"]]},
- basket:{n:"Μπάσκετ",e:"🏀",art:"μπάσκετ",formats:[[10,"5 εναντίον 5 (10 παίχτες)"],[8,"4 εναντίον 4 (8 παίχτες)"],[6,"3 εναντίον 3 (6 παίχτες)"]]}};
+ futsal:{n:"Φούτσαλ",e:"⚽",art:"φούτσαλ",formats:[[10,"5 εναντίον 5 (10 παίχτες)"],[12,"6 εναντίον 6 (12 παίχτες)"],[8,"4 εναντίον 4 (8 παίχτες)"]]}};
 const cur=()=>(P&&P.sports&&P.sports.includes(P.sport))?P.sport:(P&&P.sports?P.sports[0]:"futsal");
 const sportBar=()=>P.sports.length>1?`<div class="seg" style="margin-bottom:12px">${P.sports.map(s=>`<button data-sp="${s}" class="${cur()===s?"on":""}" style="min-width:0">${SP[s].e} ${SP[s].n}</button>`).join("")}</div>`:"";
 const bindSportBar=fn=>document.querySelectorAll("[data-sp]").forEach(b=>b.onclick=()=>{P.sport=b.dataset.sp;saveP();mapSel=null;fn()});
@@ -124,7 +119,7 @@ const modeTxt=m=>m==="level"?"Μόνο στο επίπεδο μου":"Για π�
 
 /* ---- εισαγωγή ---- */
 const SLIDES=[
- {big:"⚽🏀",h:"Ο φούρπος εν ο βασιλιάς.",b:`<p>Όλοι οι φίλοι σου έγιναν επαγγελματίες του πάτελ: ρακέτες, ρούχα, ξόδεμα μια κοπη ρριαλλια… <b>για trend</b>.</p><p>Εμείς μένουμε παραδοσιακά. <b>Φούρπος, φούτσαλ τζιαι μπάσκετ.</b> Τίποτε άλλο.</p>`},
+ {big:"⚽",h:"Ο φούρπος εν ο βασιλιάς.",b:`<p>Όλοι οι φίλοι σου έγιναν επαγγελματίες του πάτελ: ρακέτες, ρούχα, ξόδεμα μια κοπη ρριαλλια… <b>για trend</b>.</p><p>Εμείς μένουμε παραδοσιακά. <b>Φούρπος τζιαι φούτσαλ.</b> Τίποτε άλλο.</p>`},
  {big:"🎉",h:"Το foorBOSS εν για φαν.",b:`<p>Φτιάχτηκε για να σηκώσει τον κόσμο από τον καναπέ τζιαι να τον <b>αθλητικοποιήσει</b>.</p><p>Εν χρειάζεται να ξέρεις. Εν χρειάζεται εξοπλισμό. Χρειάζεται μόνο να έρτεις.</p>`},
  {big:"",h:"Τρία στάδια. Τίποτε άλλο.",b:`
   <div class="stg"><div class="n">1</div><div><b>Η παρέα σου</b><span>Είστε 5 στο τραπέζι τζιαι θέλετε ματσάκι την άλλη Τρίτη στις 3:05; Ανοίγεις το ματς. Μεικτή παρέα, 4 άντρες τζιαι μια κοπέλα; Εν πρόβλημα. Παίζετε.</span></div></div>
@@ -141,7 +136,7 @@ function intro(i=0){
 }
 
 /* ---- onboarding: άθλημα, όνομα, επίπεδο ανά άθλημα ---- */
-const WORD={futsal:{q:"Ποση μαππα ξερεις;",pro:"Είμαι καθηγητής του φουρπού"},basket:{q:"Ποσο μπασκευ ξερεις;",pro:"Είμαι καθηγητής του μπασκευ"}};
+const WORD={futsal:{q:"Ποση μαππα ξερεις;",pro:"Είμαι καθηγητής του φουρπού"}};
 const lvlList=sp=>[
  {v:"never",t:"Εν έπαιξα ποττέ",d:"Θέλω απλά να δοκιμάσω"},
  {v:"fun",t:"Παίζω λλίο",d:"Ξέρω τα βασικά, εν με νοιάζει το επίπεδο"},
@@ -149,11 +144,11 @@ const lvlList=sp=>[
 const lvlText=(sp,v)=>(lvlList(sp).find(l=>l.v===v)||{t:""}).t;
 const pm=()=>P.modes?(P.modes[cur()]||"fun"):"fun";
 const SPORTS=[
- {v:"futsal",t:"Φούτσαλ",e:"⚽",d:"Ξεκινάμε από εδώ"},
- {v:"basket",t:"Μπάσκετ",e:"🏀",d:"Δεύτερο, ξεχωριστό από το φούτσαλ"}];
+ {v:"futsal",t:"Φούτσαλ",e:"⚽",d:"Ξεκινάμε από εδώ"}];
 function onboarding(i=0,ob={name:"",sports:[],levels:{}}){
- const steps=["sports","name",...ob.sports.map(s=>"lvl:"+s)];
- const total=2+Math.max(1,ob.sports.length);
+ const multi=SPORTS.length>1;if(!multi&&!ob.sports.length)ob.sports=[SPORTS[0].v];
+ const steps=[...(multi?["sports"]:[]),"name",...ob.sports.map(s=>"lvl:"+s)];
+ const total=steps.length+(multi&&!ob.sports.length?1:0);
  const k=steps[i]||"sports";
  const bar=`<div class="steps">${Array.from({length:total},(_,j)=>`<i class="${j<=i?"on":""}"></i>`).join("")}</div>`;
  const back=i>0?`<a class="back" id="bk">← πίσω</a>`:`<div class="logo">foorBOSS</div>`;
@@ -167,8 +162,8 @@ function onboarding(i=0,ob={name:"",sports:[],levels:{}}){
  document.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{ob.levels[k.slice(4)]=b.dataset.v;onboarding(i,ob)});
  document.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{const v=b.dataset.s;ob.sports=ob.sports.includes(v)?ob.sports.filter(x=>x!==v):[...ob.sports,v];onboarding(i,ob)});
  nx.onclick=()=>{
-  if(k==="sports"){if(!ob.sports.length)return toast("Διάλεξε τουλάχιστον ένα");return onboarding(1,ob)}
-  if(k==="name"){if(!ob.name.trim())return toast("Γράψε το όνομα σου");ob.name=ob.name.trim();return onboarding(2,ob)}
+  if(k==="sports"){if(!ob.sports.length)return toast("Διάλεξε τουλάχιστον ένα");return onboarding(i+1,ob)}
+  if(k==="name"){if(!ob.name.trim())return toast("Γράψε το όνομα σου");ob.name=ob.name.trim();return onboarding(i+1,ob)}
   const sp=k.slice(4);if(!ob.levels[sp])return toast("Διάλεξε μια επιλογή");
   if(i<steps.length-1)return onboarding(i+1,ob);
   const modes={};ob.sports.forEach(x=>modes[x]=ob.levels[x]==="pro"?"level":"fun");
@@ -231,7 +226,7 @@ function mapScreen(){
 /* ---- αρχική ---- */
 function home(){
  if(!load("foorboss_intro")&&!P)return intro();
- if(!P||!P.sports||!P.levels)return onboarding();
+ if(!P||!P.sports||!P.levels||P.sports.some(x=>!SP[x]))return onboarding();
  $(`<header><div class="logo">${SP[cur()].e} foorBOSS</div><h1>Πάμε ${SP[cur()].art};</h1><p>Κλείσε ματς ή μπες σε ματς που έχει ήδη θέση.</p></header>
  <main>
  ${sportBar()}
@@ -277,10 +272,7 @@ const OPEN=[
  {sport:"futsal",host:"4 άντρες",dayText:"Δευτέρα 20:00",venue:0,cap:8,players:["Ανδρέας","Χαράλαμπος","Κυριάκος","Πάμπος"],mode:"fun",womenOnly:false,note:"Μας λείπει αντίπαλη παρέα. Παίζουμε για πλάκα!"},
  {sport:"futsal",host:"5 κοπέλες",dayText:"Τετάρτη 19:00",venue:1,cap:10,players:["Ελένη","Μαρίνα","Χριστίνα","Ανδρούλα","Σοφία"],mode:"fun",womenOnly:true,note:"Μόνο κοπέλες, καθόλου πίεση."},
  {sport:"futsal",host:"Τακτικοί",dayText:"Πέμπτη 21:00",venue:0,cap:10,players:["Στέλιος","Γιώργος","Νικόλας","Λάκης","Χρίστος","Μάριος","Περδικιός"],mode:"level",womenOnly:false,note:"Ψάχνουμε 3 με καλό επίπεδο."},
- {sport:"futsal",host:"Παρέα Λεμεσού",dayText:"Παρασκευή 18:30",venue:2,cap:10,players:["Περτιτζιής Μιτσοστόμος","Πάμπος","Κυριάκος","Ανδρέας","Λάκης","Στέλιος"],mode:"fun",womenOnly:false,note:"Μεικτό, όποιος θέλει να κλωτσήσει."},
- {sport:"basket",host:"3 φίλοι",dayText:"Τρίτη 19:00",venue:4,cap:6,players:["Γιώργος","Νικόλας","Μάριος"],mode:"fun",womenOnly:false,note:"Ψάχνουμε 3 για να ρίξουμε λίγα καλαθάκια."},
- {sport:"basket",host:"4 κοπέλες",dayText:"Πέμπτη 18:00",venue:5,cap:8,players:["Ελένη","Μαρίνα","Χριστίνα","Σοφία"],mode:"fun",womenOnly:true,note:"Μόνο κοπέλες, χωρίς πίεση."},
- {sport:"basket",host:"Ομάδα πρωταθλήματος",dayText:"Δευτέρα 21:00",venue:6,cap:10,players:["Στέλιος","Λάκης","Χρίστος","Περδικιός","Ανδρέας","Πάμπος","Κυριάκος"],mode:"level",womenOnly:false,note:"Προπόνηση με παιχνίδι, ψάχνουμε 3 με επίπεδο."}];
+ {sport:"futsal",host:"Παρέα Λεμεσού",dayText:"Παρασκευή 18:30",venue:2,cap:10,players:["Περτιτζιής Μιτσοστόμος","Πάμπος","Κυριάκος","Ανδρέας","Λάκης","Στέλιος"],mode:"fun",womenOnly:false,note:"Μεικτό, όποιος θέλει να κλωτσήσει."}];
 function why(m){
  if(m.womenOnly&&P.gender!=="F")return "Μόνο για γυναίκες";
  if(P.onlyWomen&&!m.womenOnly)return "Εσύ επέλεξες να παίζεις μόνο με γυναίκες";
