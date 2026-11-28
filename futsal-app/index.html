@@ -75,6 +75,13 @@ a.back{color:var(--lime);font-size:13px;font-weight:700;text-decoration:none;cur
 .pvb{background:#fff7d6;color:#6b4800;font-size:12px;font-weight:800;padding:8px 20px;display:flex;justify-content:space-between}.pvb a{cursor:pointer;text-decoration:underline}
 .avs{display:flex;margin:10px 0 4px}.avs .av{width:32px;height:32px;margin-right:-8px;border:2px solid #fff;font-size:13px}
 .ok{background:#e9f6df;border:2px solid var(--g2);border-radius:14px;padding:14px;margin-bottom:14px;font-weight:700}
+.intro{min-height:100vh;background:var(--g);color:#fff;padding:28px 24px 150px;background-image:repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.05) 38px 76px)}
+.intro .big{font-size:64px;margin:26px 0 8px}.intro h1{font-size:32px;line-height:1.1;font-weight:900}
+.intro p{font-size:17px;line-height:1.5;margin-top:14px;opacity:.92}.intro p b{color:var(--lime)}
+.stg{display:flex;gap:12px;margin-top:18px}.stg .n{flex:none;width:34px;height:34px;border-radius:50%;background:var(--lime);color:var(--ink);font-weight:900;display:grid;place-items:center}
+.stg b{display:block;font-size:17px}.stg span{display:block;opacity:.88;font-size:15px;line-height:1.4;margin-top:2px}
+.intro .dots{display:flex;gap:6px;margin-bottom:4px}.intro .dots i{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.25)}.intro .dots i.on{background:var(--lime)}
+.intro .sticky{background:transparent;border:0;padding-top:0}.intro .skip{display:block;text-align:center;color:#fff;opacity:.75;margin-top:12px;font-weight:700;cursor:pointer;font-size:14px}
 </style>
 </head>
 <body>
@@ -114,6 +121,24 @@ const per=()=>S.venue.price/S.cap;
 const locked=()=>paidN()===S.cap;
 const tags=m=>`<div class="tags">${m.sport?`<span class="tg">${SP[m.sport].e} ${SP[m.sport].n}</span>`:""}<span class="tg ${m.mode==="level"?"l":""}">${m.mode==="level"?"🎯 Επίπεδο τακτικών":"😄 Για πλάκα"}</span>${m.womenOnly?'<span class="tg f">♀ Μόνο γυναίκες</span>':""}${m.open?'<span class="tg">🔓 Ανοιχτό ματς</span>':""}</div>`;
 const modeTxt=m=>m==="level"?"Μόνο στο επίπεδο μου":"Για πλάκα";
+
+/* ---- εισαγωγή ---- */
+const SLIDES=[
+ {big:"⚽🏀",h:"Ο φούρπος εν ο βασιλιάς.",b:`<p>Όλοι οι φίλοι σου έγιναν επαγγελματίες του πάτελ: ρακέτες, ρούχα, ξόδεμα μια περιουσία… <b>για trend</b>.</p><p>Εμείς μένουμε παραδοσιακά. <b>Φούρπος, φούτσαλ τζιαι μπάσκετ.</b> Τίποτε άλλο.</p>`},
+ {big:"🎉",h:"Το foorBOSS εν για φαν.",b:`<p>Φτιάχτηκε για να σηκώσει τον κόσμο από τον καναπέ τζιαι να τον <b>αθλητικοποιήσει</b>.</p><p>Εν χρειάζεται να ξέρεις. Εν χρειάζεται εξοπλισμό. Χρειάζεται μόνο να έρτεις.</p>`},
+ {big:"",h:"Τρία στάδια. Τίποτε άλλο.",b:`
+  <div class="stg"><div class="n">1</div><div><b>Η παρέα σου</b><span>Είστε 5 στο τραπέζι τζιαι θέλετε ματσάκι την άλλη Τρίτη στις 3:05; Ανοίγεις το ματς. Μεικτή παρέα, 4 άντρες τζιαι μια κοπέλα; Εν πρόβλημα. Παίζετε.</span></div></div>
+  <div class="stg"><div class="n">2</div><div><b>Η άλλη παρέα</b><span>Το ματς μένει ανοιχτό μέχρι να βρεθεί αντίπαλος. Είστε 4 τζιαι σας λείπει ένας; Μπαίνει παίχτης που ψάχνει παρέα. Ή μια ολόκληρη άλλη ομάδα.</span></div></div>
+  <div class="stg"><div class="n">3</div><div><b>Κλείνετε τζιαι πληρώνετε</b><span>Ο καθένας το δικό του ή όλοι μαζί με μια πληρωμή. Σαν γεμίσει, κλειδώνει το γήπεδο.</span></div></div>`}];
+function intro(i=0){
+ const sl=SLIDES[i],last=i===SLIDES.length-1;
+ $(`<div class="intro"><div class="dots">${SLIDES.map((_,j)=>`<i class="${j<=i?"on":""}"></i>`).join("")}</div>
+  ${sl.big?`<div class="big">${sl.big}</div>`:`<div style="height:26px"></div>`}<h1>${sl.h}</h1>${sl.b}</div>
+  <div class="sticky" style="background:var(--g);border:0"><button class="btn" id="nx" style="margin:0">${last?"Πάμε!":"Επόμενο"}</button>${last?"":`<a class="skip" id="sk">Προσπέρασε</a>`}</div>`);
+ const done=()=>{store("foorboss_intro",1);home()};
+ nx.onclick=()=>last?done():intro(i+1);
+ const sk=document.getElementById("sk");if(sk)sk.onclick=done;
+}
 
 /* ---- onboarding: άθλημα, όνομα, επίπεδο ανά άθλημα ---- */
 const WORD={futsal:{q:"Ποση μαππα ξερεις;",pro:"Είμαι καθηγητής του φουρπού"},basket:{q:"Ποσο μπασκευ ξερεις;",pro:"Είμαι καθηγητής του μπασκευ"}};
@@ -205,6 +230,7 @@ function mapScreen(){
 
 /* ---- αρχική ---- */
 function home(){
+ if(!load("foorboss_intro")&&!P)return intro();
  if(!P||!P.sports||!P.levels)return onboarding();
  $(`<header><div class="logo">${SP[cur()].e} foorBOSS</div><h1>Πάμε ${SP[cur()].art};</h1><p>Κλείσε ματς ή μπες σε ματς που έχει ήδη θέση.</p></header>
  <main>
@@ -214,8 +240,9 @@ function home(){
  <button class="btn" id="mk">Φτιάξε ματς ${SP[cur()].art}</button>
  <button class="btn dark" id="fd">Βρες ανοιχτό ματς</button>
  <button class="btn ghost" id="mp">Χάρτης γηπέδων</button>
+ <p class="hint" style="border:0;padding:0;text-align:center"><a id="ab" style="cursor:pointer;color:var(--g2);font-weight:800">Τι εν το foorBOSS;</a></p>
  <p class="hint">Εν έχεις παρέα ή σου λείπουν παίχτες; Μπες σε ανοιχτό ματς. Τα γήπεδα είναι ήδη κλεισμένα, οπότε εν παίρνεις τη θέση κανενός.</p></main>`);
- bindSportBar(home);ed.onclick=prefs;mk.onclick=()=>create();fd.onclick=openList;mp.onclick=mapScreen;
+ bindSportBar(home);ab.onclick=()=>intro();ed.onclick=prefs;mk.onclick=()=>create();fd.onclick=openList;mp.onclick=mapScreen;
  const c=document.getElementById("cur");if(c)c.onclick=match;
 }
 
